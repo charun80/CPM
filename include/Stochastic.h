@@ -8,7 +8,7 @@
 
 #define _Release_2DArray(X,i,length) for(i=0;i<length;i++) if(X[i]!=NULL) delete X[i]; delete []X
 
-#ifndef _abs(x)
+#ifndef _abs
 #define _abs(x) (x>=0)?x:-x
 #endif
 
@@ -177,7 +177,7 @@ void CStochastic::ComputeMeanCovariance(int Dim,int NumData,T1* pData,T2* pMean,
 	int i,j,k;
 	memset(pMean,0,sizeof(T2)*Dim);
 	memset(pCovariance,0,sizeof(T2)*Dim*Dim);
-	
+
 	bool IsWeightLoaded=false;
 	double Sum;
 	if(pWeight!=NULL)
@@ -290,7 +290,7 @@ void CStochastic::KMeanClustering(int Dim,int NumData,int NumClusters,T1* pData,
 	pCenters=new double*[NumClusters];
 	for(i=0;i<NumClusters;i++)
 		pCenters[i]=new double[Dim];
-	
+
 	// generate randome guess of the partition
 _CStochastic_KMeanClustering_InitializePartition:
 	for(i=0;i<NumClusters;i++)
