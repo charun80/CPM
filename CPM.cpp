@@ -273,8 +273,8 @@ float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, i
 
 int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCImage* pyd2f, int level, float* radius, int iterCnt, IntImage* pydSeeds, IntImage& neighbors, FImage* pydSeedsFlow, float* bestCosts)
 {
-	int nLevels = pyd1.nlevels();
-	float ratio = pyd1.ratio();
+	//int nLevels = pyd1.nlevels();  WARN: unused variable
+	//float ratio = pyd1.ratio();    WARN: unused variable
 
 	FImage im1 = pyd1[level];
 	FImage im2 = pyd2[level];
@@ -283,8 +283,8 @@ int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCI
 	IntImage* seeds = pydSeeds + level;
 	FImage* seedsFlow = pydSeedsFlow + level;
 
-	int w = im1.width();
-	int h = im1.height();
+	//int w = im1.width();  WARN: unused variable
+	//int h = im1.height();    WARN: unused variable
 	int ptNum = seeds->height();
 
 	int maxNb = neighbors.width();
@@ -401,8 +401,8 @@ void CPM::PyramidRandomSearch(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage*
 	FImage rawImg2 = pyd2[0];
 	srand(0);
 
-	int w = rawImg1.width();
-	int h = rawImg1.height();
+	//int w = rawImg1.width();  WARN: unused variable
+	//int h = rawImg1.height();  WARN: unused variable
 	int numV = pydSeeds[0].height();
 
 	float* bestCosts = new float[numV];
@@ -430,7 +430,8 @@ void CPM::PyramidRandomSearch(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage*
 	}
 
 	for (int l = nLevels - 1; l >= 0; l--){ // coarse-to-fine
-		int iCnt = Propogate(pyd1, pyd2, im1f, im2f, l, searchRadius, iterCnts[l], pydSeeds, neighbors, pydSeedsFlow, bestCosts);
+		//int iCnt =
+		Propogate(pyd1, pyd2, im1f, im2f, l, searchRadius, iterCnts[l], pydSeeds, neighbors, pydSeedsFlow, bestCosts);
 		if (l > 0){
 			UpdateSearchRadius(neighbors, pydSeedsFlow, l, searchRadius);
 
@@ -475,7 +476,7 @@ void CPM::OnePass(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* im1f, UCIma
 	PyramidRandomSearch(pyd1, pyd2, im1f, im2f, pydSeeds, neighbors, pydSeedsFlow);
 
 	// scale
-	int b = _borderWidth;
+	// int b = _borderWidth;  WARN: unused variable
 	for (int i = 0; i < nLevels; i++){
 		pydSeedsFlow[i].Multiplywith(pow(1. / ratio, i));
 	}
@@ -551,7 +552,7 @@ float CPM::MinimalCircle(float* x, float*y, int n, float* centerX, float* center
 	static double eps = 1e-6;
 
 	// prepare data
-	Point p[20];
+	Point p[20];  p[0].x = 0; p[0].y = 0;
 	assert(n < 20);
 	for (int i = 0; i < n; i++){
 		p[i].x = x[i];

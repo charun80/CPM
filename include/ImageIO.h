@@ -87,7 +87,7 @@ bool ImageIO::saveImage(const char* filename,const T* pImagePlane,int width,int 
 }
 
 template <class T>
-void ImageIO::showImage(const char* winname, const T* pImagePlane, int width, int height, int nchannels, 
+void ImageIO::showImage(const char* winname, const T* pImagePlane, int width, int height, int nchannels,
 	ImageType imtype /*= standard*/, int waittime /*= 1*/)
 {
 	cv::Mat img = CvmatFromPixels(pImagePlane, width, height, nchannels, imtype);
@@ -96,7 +96,7 @@ void ImageIO::showImage(const char* winname, const T* pImagePlane, int width, in
 }
 
 template <class T>
-void ImageIO::showGrayImageAsColor(const char* winname, const unsigned char* pImagePlane, int width, int height, 
+void ImageIO::showGrayImageAsColor(const char* winname, const unsigned char* pImagePlane, int width, int height,
 	T minV, T maxV, int waittime /*= 1*/)
 {
 	CColorTable colorTbl;
@@ -121,7 +121,7 @@ void ImageIO::showGrayImageAsColor(const char* winname, const unsigned char* pIm
 	// show range
 	char info[256];
 	if (IsFloat)
-		sprintf(info, "[%.3f, %.3f]", minV, maxV);
+		sprintf(info, "[%.3f, %.3f]", double(minV), double(maxV));
 	else
 		sprintf(info, "[%d, %d]", (int)minV, (int)maxV);
 	cv::putText(im, info, cvPoint(10, 20), CV_FONT_HERSHEY_SIMPLEX, 0.5, cvScalar(255, 255, 255));
@@ -153,7 +153,8 @@ cv::Mat ImageIO::CvmatFromPixels(const T* pImagePlane, int width, int height, in
 	if (typeid(T) == typeid(double) || typeid(T) == typeid(float) || typeid(T) == typeid(long double))
 		IsFloat = true;
 
-	double Max, Min;
+	double Max = std::numeric_limits<double>::signaling_NaN();
+	double Min = std::numeric_limits<double>::signaling_NaN();
 	int nElements = width*height*nchannels;
 	switch (imtype){
 	case standard:
@@ -185,7 +186,7 @@ cv::Mat ImageIO::CvmatFromPixels(const T* pImagePlane, int width, int height, in
 		{
 			int offset1 = i*width*nchannels;
 			int offset2 = i*im.step;
-			for (int j = 0; j < im.step; j++)
+			for (unsigned int j = 0; j < im.step; j++)
 			{
 				switch (imtype){
 				case standard:
@@ -207,7 +208,7 @@ cv::Mat ImageIO::CvmatFromPixels(const T* pImagePlane, int width, int height, in
 	if (imtype == derivative || imtype == normalized){
 		char info[256];
 		if (IsFloat)
-			sprintf(info, "[%.3f, %.3f]", Min, Max);
+			sprintf(info, "[%.3f, %.3f]", double(Min), double(Max));
 		else
 			sprintf(info, "[%d, %d]", (int)Min, (int)Max);
 		cv::putText(im, info, cvPoint(10, 20), CV_FONT_HERSHEY_SIMPLEX, 0.5, cvScalar(255, 255, 255));
@@ -383,7 +384,7 @@ bool ImageIO::writeImage(const QString& filename, const T*& pImagePlane,int widt
 			pTempBuffer[i*4+1]=convertPixel(pImagePlane[i*nchannels+1],IsFloat,type,_Max,_Min);
 			pTempBuffer[i*4+2]=convertPixel(pImagePlane[i*nchannels+2],IsFloat,type,_Max,_Min);
 		}
-		else 
+		else
 			for (int j=0;j<3;j++)
 				pTempBuffer[i*4+j]=convertPixel(pImagePlane[i*nchannels],IsFloat,type,_Max,_Min);
 		pTempBuffer[i*4+3]=255;
@@ -419,7 +420,7 @@ bool ImageIO::writeImage(const QString& filename, const T* pImagePlane,int width
 			pTempBuffer[i*4+1]=convertPixel(pImagePlane[i*nchannels+1],IsFloat,normalized,_Max,_Min);
 			pTempBuffer[i*4+2]=convertPixel(pImagePlane[i*nchannels+2],IsFloat,normalized,_Max,_Min);
 		}
-		else 
+		else
 			for (int j=0;j<3;j++)
 				pTempBuffer[i*4+j]=convertPixel(pImagePlane[i*nchannels],IsFloat,normalized,_Max,_Min);
 		pTempBuffer[i*4+3]=255;

@@ -305,7 +305,7 @@ void ImageProcessing::ResizeImage(const T1 *pSrcImage, T2 *pDstImage, int SrcWid
 {
 	float xRatio=(float)DstWidth/SrcWidth;
 	float yRatio=(float)DstHeight/SrcHeight;
-	memset(pDstImage,sizeof(T2)*DstWidth*DstHeight*nChannels,0);
+	memset(pDstImage,0, sizeof(T2)*DstWidth*DstHeight*nChannels);
 
 	float x,y;
 
@@ -478,7 +478,7 @@ void ImageProcessing::vfiltering(const T1* pSrcImage,T2* pDstImage,int width,int
 	memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
 	T2* pBuffer;
 	float w;
-	int i,j,l,k,offset,ii;
+	int i,j,l,k,ii;  // ,offset  WARN: unsued variable
 	for(i=0;i<height;i++)
 		for(j=0;j<width;j++)
 		{
