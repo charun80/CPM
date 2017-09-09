@@ -1,4 +1,5 @@
 #include "CPM.h"
+#include <cassert>
 #include "ImageFeature.h"
 
 // [4/6/2017 Yinlin.Hu]

@@ -1,7 +1,6 @@
 #ifndef PYCPM_H_INCLUDED
 #define PYCPM_H_INCLUDED
 
-#include <opencv2/core/core.hpp>
 
 // example: see https://github.com/nlgranger/CPPyModule/blob/master/example-distutils/flipping_wrapper.h
 

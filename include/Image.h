@@ -3,18 +3,22 @@
 #include "project.h"
 #include <stdio.h>
 #include <string.h>
-#include <memory.h>
+#include "Memory.h"
+#include <cfloat>
 #include "ImageProcessing.h"
 #include <iostream>
 #include <fstream>
 #include <typeinfo>
 #include "Vector.h"
 #include "Stochastic.h"
+#include "Util.h"
 
-#ifndef _MATLAB
-	#include "ImageIO.h"
-#else
-	#include "mex.h"
+#ifndef _NO_IMAGE_IO
+    #ifndef _MATLAB
+        #include "ImageIO.h"
+    #else
+        #include "mex.h"
+    #endif
 #endif
 
 using namespace std;
@@ -125,6 +129,7 @@ public:
 	virtual bool saveImage(ofstream& myfile) const;
 	virtual bool loadImage(ifstream& myfile);
 #ifndef _MATLAB
+  #ifndef _NO_IMAGE_IO
 	virtual bool imread(const char* filename);
 	virtual bool imwrite(const char* filename) const;
 	virtual bool imwrite(const char* filename,ImageIO::ImageType) const;
@@ -137,6 +142,7 @@ public:
 	//virtual bool imwrite(const QString& filename,int quality=100) const;
 	//virtual bool imwrite(const QString& filename,ImageIO::ImageType imagetype,int quality=100) const;
 	//virtual bool imwrite(const QString& fileanme,T min,T max,int quality=100) const;
+  #endif
 #else
 	virtual bool imread(const char* filename) const {return true;};
 	virtual bool imwrite(const char* filename) const {return true;};
@@ -921,6 +927,7 @@ bool Image<T>::loadImage(ifstream& myfile)
 //------------------------------------------------------------------------------------------
 // function to load the image
 //------------------------------------------------------------------------------------------
+#ifndef _NO_IMAGE_IO
 #ifndef _MATLAB
 
 template <class T>
@@ -1042,7 +1049,8 @@ void Image<T>::ToLab(Image<T1>& image) const
 //	return ImageIO::writeImage(filename,(const T*&)pData,imWidth,imHeight,nChannels,min,max,quality);
 //}
 
-#endif
+#endif  // _MATLAB
+#endif  // _NO_IMAGE_IO
 
 //------------------------------------------------------------------------------------------
 // function to get x-derivative of the image

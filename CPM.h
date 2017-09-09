@@ -26,6 +26,15 @@ corresponding to one match per line.
 #ifndef _CPM_H_
 #define _CPM_H_
 
+
+#ifdef PYLIB
+    #undef _MATLAB
+    #define _NO_IMAGE_IO
+#endif
+
+
+
+
 #include "ImagePyramid.h"
 
 class CPM

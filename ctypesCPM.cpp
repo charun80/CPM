@@ -1,6 +1,7 @@
 #include "ctypesCPM.h"
-#include "CPM.h"
 
+#include "CPM.h"
+#include <cassert>
 
 
 extern "C"
