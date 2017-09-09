@@ -6,9 +6,11 @@ CFLAGS = -O3 -Wall -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -fstack-
 #CFLAGS = -w -ggdb3  -Iinclude
 LDFLAGS = -lopencv_core -lopencv_highgui
 
-SHARED_LDFLAGS = -shared # linking flags
 
 TARGET_LIB = libctypesCPM.so # target lib
+
+SHARED_LDFLAGS = -shared -Wl,-soname,$(TARGET_LIB)# linking flags
+
 
 SOURCES_CPP := $(shell find . -name '*.cpp')
 OBJ := $(SOURCES_CPP:%.cpp=%.o)
@@ -19,13 +21,17 @@ all: CPM $(TARGET_LIB)
 .cpp.o:  %.cpp %.h
 	$(CCPP) -c -o $@ $(CFLAGS) $+
 
+%.pylib.o:  %.cpp
+	$(CCPP) -c -o $@ $(CFLAGS) -DPYLIB $+
+
+	
 CPM: $(HEADERS) CPM.o main.o
 	$(CCPP) -o $@ CPM.o main.o $(LDFLAGS)
 
 
-$(TARGET_LIB): CPM.o ctypesCPM.o
-	$(CCPP) $(CFLAGS) ${LDFLAGS} ${SHARED_LDFLAGS} -o $@ $^
+$(TARGET_LIB): CPM.pylib.o ctypesCPM.pylib.o
+	$(CCPP) $(CFLAGS) ${SHARED_LDFLAGS} -o $@ $^
 
 clean:
-	rm -f $(OBJ) CPM $(TARGET_LIB)
+	rm -f $(OBJ) *.o CPM $(TARGET_LIB)
 
