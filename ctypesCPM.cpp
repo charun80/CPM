@@ -5,10 +5,10 @@
 
 
 extern "C"
-DLL_PUBLIC sFlowResult cpmFlowFromBGR(
+DLL_PUBLIC sFlowResult computeCPMFlow(
     const float* const f_inImg1_data_pf,
     const float* const f_inImg2_data_pf,
-    const int f_nRows_i, const int f_nCols_i,
+    const int f_nRows_i, const int f_nCols_i, const int f_nChannels,
     const int f_nSteps )
 {
     sFlowResult l_Result = {NULL,0};
@@ -19,12 +19,12 @@ DLL_PUBLIC sFlowResult cpmFlowFromBGR(
     // obtain input
     FImage l_cpmImg1, l_cpmImg2;
 
-    l_cpmImg1.allocate( f_nCols_i, f_nRows_i, 3);
+    l_cpmImg1.allocate( f_nCols_i, f_nRows_i, f_nChannels );
     //l_cpmImg1.allocate( f_nRows_i, f_nCols_i, 3);
     memcpy( l_cpmImg1.pData, f_inImg1_data_pf, l_imgSize );
     //l_cpmImg1.setColorType ( BGR );
 
-    l_cpmImg2.allocate( f_nCols_i, f_nRows_i, 3);
+    l_cpmImg2.allocate( f_nCols_i, f_nRows_i, f_nChannels );
     //l_cpmImg2.allocate( f_nRows_i, f_nCols_i, 3);
     memcpy( l_cpmImg2.pData, f_inImg2_data_pf, l_imgSize );
     //l_cpmImg2.setColorType ( BGR );
@@ -34,9 +34,7 @@ DLL_PUBLIC sFlowResult cpmFlowFromBGR(
     {
         CPM cpm;
         cpm.SetStep( f_nSteps );
-        std::cout << "Start Matching" << std::endl;
         cpm.Matching( l_cpmImg1, l_cpmImg2, l_cpmMatches );
-        std::cout << "Done Matching" << std::endl;
     }
 
     const int l_numMatches = l_cpmMatches.height();
