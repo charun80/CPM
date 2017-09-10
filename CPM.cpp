@@ -261,12 +261,12 @@ float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, i
 	totalDiff += sum1;
 	// add the left
 	for (idx *= 16; idx < ch; idx++){
-		totalDiff += abs(p1[idx] - p2[idx]);
+		totalDiff += std::abs(p1[idx] - p2[idx]);
 	}
 #else
 	totalDiff = 0;
 	for (int idx = 0; idx < ch; idx++){
-		totalDiff += abs(p1[idx] - p2[idx]);
+		totalDiff += std::abs(p1[idx] - p2[idx]);
 	}
 #endif
 
@@ -334,7 +334,7 @@ int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCI
 				float tv = seedsFlow->pData[2 * nbIdx[i] + 1];
 				float cu = seedsFlow->pData[2 * idx];
 				float cv = seedsFlow->pData[2 * idx + 1];
-				if (abs(tu - cu) < 1e-6 && abs(tv - cv) < 1e-6){
+				if (std::abs(tu - cu) < 1e-6 && std::abs(tv - cv) < 1e-6){
 					continue;
 				}
 				float tc = MatchCost(im1, im2, im1f, im2f, x, y, x + tu, y + tv);
@@ -359,7 +359,7 @@ int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCI
 
 				float cu = seedsFlow->pData[2 * idx];
 				float cv = seedsFlow->pData[2 * idx + 1];
-				if (abs(tu - cu) < 1e-6 && abs(tv - cv) < 1e-6){
+				if (std::abs(tu - cu) < 1e-6 && std::abs(tv - cv) < 1e-6){
 					continue;
 				}
 
@@ -438,9 +438,9 @@ void CPM::PyramidRandomSearch(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage*
 			UpdateSearchRadius(neighbors, pydSeedsFlow, l, searchRadius);
 
 			// scale the radius accordingly
-			int maxR = _maxDisplacement * pow(ratio, l) + 0.5;
+			int maxR = _maxDisplacement * std::pow(ratio, l) + 0.5;
 			for (int i = 0; i < numV; i++){
-				searchRadius[i] = __max(__min(searchRadius[i], maxR), 1);
+				searchRadius[i] = std::max(std::min(searchRadius[i], float(maxR)), 1.f);
 				searchRadius[i] *= (1. / _pydRatio);
 			}
 

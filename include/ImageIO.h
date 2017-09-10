@@ -127,15 +127,15 @@ cv::Mat ImageIO::CvmatFromPixels(const T* pImagePlane, int width, int height, in
 		// find the max of the absolute value
 		Max = pImagePlane[0];
 		for (int i = 0; i < nElements; i++)
-			Max = __max(Max, fabs((double)pImagePlane[i]));
+			Max = std::max(Max, std::abs((double)pImagePlane[i]));
 		Min = -Max;
 		break;
 	case normalized:
 		Max = Min = pImagePlane[0];
 		for (int i = 0; i < nElements; i++)
 		{
-			Max = __max(Max, pImagePlane[i]);
-			Min = __min(Min, pImagePlane[i]);
+			Max = std::max(Max, double(pImagePlane[i]));
+			Min = std::min(Min, double(pImagePlane[i]));
 		}
 		break;
 	}
@@ -157,7 +157,7 @@ cv::Mat ImageIO::CvmatFromPixels(const T* pImagePlane, int width, int height, in
 					if (IsFloat)
 						im.data[offset2 + j] = pImagePlane[offset1 + j] * 255;
 					else
-						im.data[offset2 + j] = __max(__min(pImagePlane[offset1 + j], 255), 0);
+						im.data[offset2 + j] = std::max(std::min(pImagePlane[offset1 + j], T(255)), T(0));
 					break;
 				case derivative:
 				case normalized:
@@ -325,17 +325,17 @@ bool ImageIO::writeImage(const QString& filename, const T*& pImagePlane,int widt
 			for(int i=0;i<nPixels;i++)
 			{
 				if(IsFloat)
-					_Max=__max(_Max,fabs((double)pImagePlane[i]));
+					_Max=std::max(_Max,fabs((double)pImagePlane[i]));
 				else
-					_Max=__max(_Max,abs(pImagePlane[i]));
+					_Max=std::max(_Max,abs(pImagePlane[i]));
 			}
 			break;
 		case normalized:
 			_Min=_Max=pImagePlane[0];
 			for(int i=1;i<nElements;i++)
 			{
-				_Min=__min(_Min,pImagePlane[i]);
-				_Max=__max(_Max,pImagePlane[i]);
+				_Min=std::min(_Min,pImagePlane[i]);
+				_Max=std::max(_Max,pImagePlane[i]);
 			}
 			break;
 	}
@@ -402,9 +402,9 @@ unsigned char ImageIO::convertPixel(const T& value,bool IsFloat,ImageType type,T
 	switch(type){
 		case standard:
 			if(IsFloat)
-				return __max(__min(value*255,255),0);
+				return std::max(std::min(value*255,255),0);
 			else
-				return __max(__min(value,255),0);
+				return std::max(std::min(value,255),0);
 			break;
 		case derivative:
 			return (double)((double)value/_Max+1)/2*255;
