@@ -33,7 +33,7 @@ typedef ImagePyramid<float> FImagePyramid;
 if(ratio>0.98 || ratio<0.4)
 ratio=0.75;
 // first decide how many levels
-nLevels=log((float)minWidth/image.width())/log(ratio);
+nLevels=std::log((float)minWidth/image.width())/std::log(ratio);
 if(ImPyramid!=NULL)
 delete []ImPyramid;
 ImPyramid=new DImage[nLevels];
@@ -59,14 +59,14 @@ void ImagePyramid<T>::ConstructPyramid(const FImage& image, float ratio /*= 0.8*
 	if (ratio>0.98 || ratio<0.4)
 		ratio = 0.75;
 	// first decide how many levels
-	nLevels = log((float)minWidth / image.width()) / log(ratio);
+	nLevels = std::log((float)minWidth / image.width()) / std::log(ratio);
 	fRatio = ratio;
 	if (ImPyramid != NULL)
 		delete[]ImPyramid;
 	ImPyramid = new FImage[nLevels];
 	ImPyramid[0].copyData(image);
 	float baseSigma = (1 / ratio - 1);
-	int n = log(0.25) / log(ratio);
+	int n = std::log(0.25) / std::log(ratio);
 	float nSigma = baseSigma*n;
 	for (int i = 1; i<nLevels; i++)
 	{
@@ -99,7 +99,7 @@ void ImagePyramid<T>::ConstructPyramidLevels(const FImage& image, float ratio /*
 	ImPyramid = new FImage[nLevels];
 	ImPyramid[0].copyData(image);
 	float baseSigma = (1 / ratio - 1);
-	int n = log(0.25) / log(ratio);
+	int n = std::log(0.25) / std::log(ratio);
 	float nSigma = baseSigma*n;
 	for (int i = 1; i<nLevels; i++)
 	{
