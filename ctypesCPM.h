@@ -5,12 +5,25 @@
 // example: see https://github.com/nlgranger/CPPyModule/blob/master/example-distutils/flipping_wrapper.h
 
 
+#define DLL_PUBLIC __attribute__ ((visibility ("default")))
+
 extern "C"
-int cpmFlowFromGray(
+{
+
+struct sFlowResult
+{
+    float* m_outMatching_pf;
+    int    m_nMatches_i;
+};
+
+
+extern "C"
+DLL_PUBLIC sFlowResult cpmFlowFromBGR(
     const float* const f_inImg1_data_pf,
     const float* const f_inImg2_data_pf,
     const int f_nRows_i, const int f_nCols_i,
-    const int f_nSteps,
-    float **f_outMatching_ppf );
+    const int f_nSteps );
+
+}
 
 #endif // PYCPM_H_INCLUDED
