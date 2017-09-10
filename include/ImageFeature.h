@@ -83,8 +83,8 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 	float _cos,_sin,temp;
 	for(int k = 0;k<nBins;k++)
 	{
-		_sin    = sin(theta*k);
-		_cos   = cos(theta*k);
+		_sin    = std::sin(theta*k);
+		_cos   = std::cos(theta*k);
 		for(int i = 0;i<nPixels; i++)
 		{
 			temp = std::max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0.f);
@@ -251,8 +251,8 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 	float _cos,_sin,temp;
 	for(int k = 0;k<nBins;k++)
 	{
-		_sin    = sin(theta*k);
-		_cos   = cos(theta*k);
+		_sin    = std::sin(theta*k);
+		_cos   = std::cos(theta*k);
 		for(int i = 0;i<nPixels; i++)
 		{
 			temp = std::max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0.f);
