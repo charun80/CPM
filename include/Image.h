@@ -18,7 +18,7 @@
 	#include "mex.h"
 #endif
 
-using namespace std;
+//using namespace std;
 
 enum collapse_type{collapse_average,collapse_max,collapse_min};
 enum color_type{ DATA, GRAY, RGB, BGR, LAB };
@@ -123,8 +123,8 @@ public:
 	// image IO's
 	virtual bool saveImage(const char* filename) const;
 	virtual bool loadImage(const char* filename);
-	virtual bool saveImage(ofstream& myfile) const;
-	virtual bool loadImage(ifstream& myfile);
+	virtual bool saveImage(std::ofstream& myfile) const;
+	virtual bool loadImage(std::ifstream& myfile);
 #ifndef _MATLAB
 	virtual bool imread(const char* filename);
 	virtual bool imwrite(const char* filename) const;
@@ -852,7 +852,7 @@ void Image<T>::upSampleNN(Image<T1>& output,int ratio) const
 template <class T>
 bool Image<T>::saveImage(const char *filename) const
 {
-	ofstream myfile(filename,ios::out | ios::binary);
+	std::ofstream myfile(filename,std::ios::out | std::ios::binary);
 	if(myfile.is_open())
 	{
 		bool foo = saveImage(myfile);
@@ -864,7 +864,7 @@ bool Image<T>::saveImage(const char *filename) const
 }
 
 template <class T>
-bool Image<T>::saveImage(ofstream& myfile) const
+bool Image<T>::saveImage(std::ofstream& myfile) const
 {
 	char type[16];
 	sprintf(type,"%s",typeid(T).name());
@@ -880,7 +880,7 @@ bool Image<T>::saveImage(ofstream& myfile) const
 template <class T>
 bool Image<T>::loadImage(const char *filename)
 {
-	ifstream myfile(filename, ios::in | ios::binary);
+	std::ifstream myfile(filename, std::ios::in | std::ios::binary);
 	if(myfile.is_open())
 	{
 		bool foo = loadImage(myfile);
@@ -892,7 +892,7 @@ bool Image<T>::loadImage(const char *filename)
 }
 
 template <class T>
-bool Image<T>::loadImage(ifstream& myfile)
+bool Image<T>::loadImage(std::ifstream& myfile)
 {
 	char type[16];
 	myfile.read(type,16);
@@ -903,7 +903,7 @@ bool Image<T>::loadImage(ifstream& myfile)
 		sprintf(type,"unsigned int");
 	if(strcmpi(type,typeid(T).name())!=0)
 	{
-		cout<<"The type of the image is different from the type of the object!"<<endl;
+		std::cerr<<"The type of the image is different from the type of the object!"<<std::endl;
 		return false;
 	}
 
@@ -1399,7 +1399,7 @@ void Image<T>::imfilter(Image<T1>& image,const Image<T2>& kernel) const
 {
 	if(kernel.width()!=kernel.height())
 	{
-		cout<<"Error in Image<T>::imfilter(Image<T1>& image,const Image<T2>& kernel)"<<endl;
+		std::cerr<<"Error in Image<T>::imfilter(Image<T1>& image,const Image<T2>& kernel)"<<std::endl;
 		exit(-1);
 	}
 	int winsize = (kernel.width()-1)/2;
@@ -1462,7 +1462,7 @@ bool Image<T>::BoundaryCheck() const
 	for(int i = 0;i<nElements;i++)
 		if(!(pData[i]<1E10 && pData[i]>-1E10))
 		{
-			cout<<"Error, bad data!"<<endl;
+			std::cerr<<"Error, bad data!"<<std::endl;
 			i = i;
 			return false;
 		}
@@ -1488,7 +1488,7 @@ void Image<T>::imfilter_transpose(Image<T1>& image,const Image<T2>& kernel) cons
 {
 	if(kernel.width()!=kernel.height())
 	{
-		cout<<"Error in Image<T>::imfilter(Image<T1>& image,const Image<T2>& kernel)"<<endl;
+		std::cerr<<"Error in Image<T>::imfilter(Image<T1>& image,const Image<T2>& kernel)"<<std::endl;
 		exit(-1);
 	}
 	int winsize = (kernel.width()-1)/2;
@@ -1788,12 +1788,12 @@ void Image<T>::crop(Image<T1>& patch,int Left,int Top,int Width,int Height) cons
 	// make sure that the cropping is valid
 	if(Left<0 || Top<0 || Left>=imWidth || Top>=imHeight)
 	{
-		cout<<"The cropping coordinate is outside the image boundary!"<<endl;
+		std::cerr<<"The cropping coordinate is outside the image boundary!"<<std::endl;
 		return;
 	}
 	if(Width<0 || Height<0 || Width+Left>imWidth || Height+Top>imHeight)
 	{
-		cout<<"The patch to crop is invalid!"<<endl;
+		std::cerr<<"The patch to crop is invalid!"<<std::endl;
 		return;
 	}
 	ImageProcessing::cropImage(pData,imWidth,imHeight,nChannels,patch.data(),Left,Top,Width,Height);
@@ -1831,7 +1831,7 @@ void Image<T>::Multiply(const Image<T1>& image1,const Image<T2>& image2,const Im
 {
 	if(image1.matchDimension(image2)==false || image2.matchDimension(image3)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Multiply()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Multiply()!"<<std::endl;
 		return;
 	}
 	if(matchDimension(image1)==false)
@@ -1866,7 +1866,7 @@ void Image<T>::Multiply(const Image<T1>& image1,const Image<T2>& image2)
 {
 	if(image1.matchDimension(image2)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Multiply()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Multiply()!"<<std::endl;
 		return;
 	}
 	if(matchDimension(image1)==false)
@@ -1885,7 +1885,7 @@ void Image<T>::MultiplyAcross(const Image<T1>& image1,const Image<T2>& image2)
 {
 	if(image1.width() != image2.width() || image1.height()!=image2.height() || image2.nchannels()!=1)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Multiply()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Multiply()!"<<std::endl;
 		return;
 	}
 	if(matchDimension(image1)==false)
@@ -1905,7 +1905,7 @@ void Image<T>::Multiplywith(const Image<T1> &image1)
 {
 	if(matchDimension(image1)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Multiplywith()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Multiplywith()!"<<std::endl;
 		return;
 	}
 	const T1*& pData1=image1.data();
@@ -1919,7 +1919,7 @@ void Image<T>::MultiplywithAcross(const Image<T1> &image1)
 {
 	if(imWidth!=image1.width() || imHeight!=image1.height() || image1.nchannels()!=1)
 	{
-		cout<<"Error in image dimensions--function Image<T>::MultiplywithAcross()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::MultiplywithAcross()!"<<std::endl;
 		return;
 	}
 	const T1*& pData1=image1.data();
@@ -1959,7 +1959,7 @@ void Image<T>::Add(const Image<T1>& image1,const Image<T2>& image2)
 {
 	if(image1.matchDimension(image2)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Add()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Add()!"<<std::endl;
 		return;
 	}
 	if(matchDimension(image1)==false)
@@ -1990,7 +1990,7 @@ void Image<T>::Add(const Image<T1>& image1,const Image<T2>& image2,float ratio)
 {
 	if(image1.matchDimension(image2)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Add()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Add()!"<<std::endl;
 		return;
 	}
 	if(matchDimension(image1)==false)
@@ -2024,7 +2024,7 @@ void Image<T>::Add(const Image<T1>& image1,const float ratio)
 {
 	if(matchDimension(image1)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Add()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Add()!"<<std::endl;
 		return;
 	}
 	const T1*& pData1=image1.data();
@@ -2054,7 +2054,7 @@ void Image<T>::Add(const Image<T1>& image1)
 {
 	if(matchDimension(image1)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Add()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Add()!"<<std::endl;
 		return;
 	}
 	const T1*& pData1=image1.data();
@@ -2105,7 +2105,7 @@ void Image<T>::Subtract(const Image<T1> &image1, const Image<T2> &image2)
 {
 	if(image1.matchDimension(image2)==false)
 	{
-		cout<<"Error in image dimensions--function Image<T>::Subtract()!"<<endl;
+		std::cerr<<"Error in image dimensions--function Image<T>::Subtract()!"<<std::endl;
 		return;
 	}
 	if(matchDimension(image1)==false)
@@ -2472,7 +2472,7 @@ void Image<T>::ConvertToVisualWords(Image<T1> &result, const T2 *pDictionary, in
 {
 	if(nChannels !=nDim)
 	{
-		cout<<"The dimension of the vocabulary must match to the nChannels of the image"<<endl;
+		std::cerr<<"The dimension of the vocabulary must match to the nChannels of the image"<<std::endl;
 		return;
 	}
 	if(result.matchDimension(imWidth,imHeight,1))

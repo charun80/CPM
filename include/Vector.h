@@ -5,7 +5,7 @@
 #include <fstream>
 #include "project.h"
 
-using namespace std;
+//using namespace std;
 
 template <class T>
 class Vector
@@ -77,17 +77,17 @@ public:
 			result += vect1[i]*vect2[i];
 		return result;
 	}
-	
-	void concatenate(const vector< Vector<T> >& vect);
 
-	//friend const Vector<T> concatenate(const vector<Vector<T>>& vect){Vector<T> result; result.concatenate(vect); return result;};
-	bool write(ofstream& myfile)
+	void concatenate(const std::vector< Vector<T> >& vect);
+
+	//friend const Vector<T> concatenate(const std::vector<Vector<T>>& vect){Vector<T> result; result.concatenate(vect); return result;};
+	bool write(std::ofstream& myfile)
 	{
 		myfile.write((char *)&nDim,sizeof(int));
 		myfile.write((char *)pData,sizeof(T)*nDim);
 		return true;
 	}
-	bool read(ifstream& myfile)
+	bool read(std::ifstream& myfile)
 	{
 		myfile.read((char *)&nDim,sizeof(int));
 		allocate(nDim);
@@ -188,7 +188,7 @@ template <class T>
 void Vector<T>::dimcheck(const Vector &vect) const
 {
 	if(nDim!=vect.nDim)
-		cout<<"The dimensions of the vectors don't match!"<<endl;
+		std::cerr<<"The dimensions of the std::vectors don't match!"<<std::endl;
 }
 
 template <class T>
@@ -221,8 +221,8 @@ template <class T>
 void Vector<T>::printVector()
 {
 	for(int i=0;i<nDim;i++)
-		cout<<pData[i]<<' ';
-	cout<<endl;
+		std::cout<<pData[i]<<' ';
+	std::cout<<std::endl;
 }
 
 
@@ -385,7 +385,7 @@ double innerproduct(const Vector<T>& vect1,const Vector<T>& vect2)
 }
 
 template <class T>
-void Vector<T>::concatenate(const vector< Vector<T> >& vect)
+void Vector<T>::concatenate(const std::vector< Vector<T> >& vect)
 {
 	releaseData();
 	nDim = 0;

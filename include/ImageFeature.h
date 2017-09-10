@@ -19,7 +19,7 @@ public:
 	static void imSIFT(const Image<T>& imsrc, UCImage& imsift, int cellSize = 2, int stepSize = 1, bool IsBoundaryIncluded = false, int nBins = 8);
 
 	template <class T>
-	static void imSIFT(const Image<T>& imsrc, UCImage& imsift, const vector<int> cellSizeVect, int stepSize = 1, bool IsBoundaryIncluded = false, int nBins = 8);
+	static void imSIFT(const Image<T>& imsrc, UCImage& imsift, const std::vector<int> cellSizeVect, int stepSize = 1, bool IsBoundaryIncluded = false, int nBins = 8);
 
 };
 
@@ -28,7 +28,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 {
 	if(cellSize<=0)
 	{
-		cout<<"The cell size must be positive!"<<endl;
+		std::cerr<<"The cell size must be positive!"<<std::endl;
 		return;
 	}
 
@@ -198,7 +198,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 // multi-scale SIFT features
 //--------------------------------------------------------------------------------------------------
 template <class T>
-void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const vector<int> cellSizeVect, int stepSize, bool IsBoundaryIncluded, int nBins)
+void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vector<int> cellSizeVect, int stepSize, bool IsBoundaryIncluded, int nBins)
 {
 	// this parameter controls decay of the gradient energy falls into a bin
 	// run SIFT_weightFunc.m to see why alpha = 9 is the best value
@@ -290,7 +290,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const vector<i
 		int cellSize = cellSizeVect[h];
 		if(cellSize<=0)
 		{
-			cout<<"The cell size must be positive!"<<endl;
+			std::cerr<<"The cell size must be positive!"<<std::endl;
 			return;
 		}
 		// filter out the SIFT feature
