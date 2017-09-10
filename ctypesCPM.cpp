@@ -22,12 +22,12 @@ DLL_PUBLIC sFlowResult cpmFlowFromBGR(
     l_cpmImg1.allocate( f_nCols_i, f_nRows_i, 3);
     //l_cpmImg1.allocate( f_nRows_i, f_nCols_i, 3);
     memcpy( l_cpmImg1.pData, f_inImg1_data_pf, l_imgSize );
-    l_cpmImg1.setColorType ( BGR );
+    //l_cpmImg1.setColorType ( BGR );
 
     l_cpmImg2.allocate( f_nCols_i, f_nRows_i, 3);
     //l_cpmImg2.allocate( f_nRows_i, f_nCols_i, 3);
     memcpy( l_cpmImg2.pData, f_inImg2_data_pf, l_imgSize );
-    l_cpmImg2.setColorType ( BGR );
+    //l_cpmImg2.setColorType ( BGR );
 
     // compute flow
     FImage l_cpmMatches;
