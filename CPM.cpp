@@ -1,5 +1,6 @@
 #include "CPM.h"
 #include <cassert>
+#include <cmath>
 #include "ImageFeature.h"
 
 // [4/6/2017 Yinlin.Hu]
@@ -163,7 +164,7 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 		float v = seedsFlow[2 * i + 1];
 		float x2 = x + u;
 		float y2 = y + v;
-		if (abs(u) < UNKNOWN_FLOW && abs(v) < UNKNOWN_FLOW){
+		if (std::abs(u) < UNKNOWN_FLOW && std::abs(v) < UNKNOWN_FLOW){
 			tmpMatch[4 * i + 0] = x;
 			tmpMatch[4 * i + 1] = y;
 			tmpMatch[4 * i + 2] = x2;
