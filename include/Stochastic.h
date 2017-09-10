@@ -1,16 +1,14 @@
 #ifndef STOCHASTIC_H
 #define STOCHASTIC_H
 
-#include "math.h"
-#include "stdlib.h"
+#include <cmath>
+#include <cstdlib>
 #include "project.h"
-#include "memory.h"
+#include <memory.h>
 
 #define _Release_2DArray(X,i,length) for(i=0;i<length;i++) if(X[i]!=NULL) delete X[i]; delete []X
 
-#ifndef _abs
-#define _abs(x) (x>=0)?x:-x
-#endif
+
 
 #ifndef PI
 #define PI 3.1415927
@@ -131,7 +129,7 @@ T CStochastic::Min(int NumData,T* pData)
 	int i;
 	T result=pData[0];
 	for(i=1;i<NumData;i++)
-		result=__min(result,pData[i]);
+		result=std::min(result,pData[i]);
 	return result;
 }
 
@@ -141,7 +139,7 @@ T CStochastic::Min(int NumData,T* pData1,T* pData2)
 	int i;
 	T result=pData1[0]+pData2[0];
 	for(i=1;i<NumData;i++)
-		result=__min(result,pData1[i]+pData2[i]);
+		result=std::min(result,pData1[i]+pData2[i]);
 	return result;
 }
 
@@ -151,7 +149,7 @@ T CStochastic::Max(int NumData,T* pData)
 	int i;
 	T result=pData[0];
 	for(i=1;i<NumData;i++)
-		result=__max(result,pData[i]);
+		result=std::max(result,pData[i]);
 	return result;
 }
 
@@ -366,7 +364,7 @@ int CStochastic::FindClosestPoint(T1* pPointSet,int NumPoints,int nDim,T2* Query
 	T1 MinDistance,Distance,x;
 	MinDistance=0;
 	for(j=0;j<nDim;j++)
-		MinDistance+=_abs(pPointSet[j]-QueryPoint[j]);
+		MinDistance+=std::abs(pPointSet[j]-QueryPoint[j]);
 	for(i=1;i<NumPoints;i++)
 	{
 		Distance=0;
@@ -374,7 +372,7 @@ int CStochastic::FindClosestPoint(T1* pPointSet,int NumPoints,int nDim,T2* Query
 		for(j=0;j<nDim;j++)
 		{
 			x=pPointSet[offset+j]-QueryPoint[j];
-			Distance+=_abs(x);
+			Distance+=std::abs(x);
 		}
 		if(Distance<MinDistance)
 		{
@@ -399,7 +397,7 @@ void CStochastic::GaussianFiltering(T1* pSrcArray,T2* pDstArray,int NumPoints,in
 			for(j=-size;j<=size;j++)
 			{
 				u=i+j;
-				u=__max(__min(u,NumPoints-1),0);
+				u=std::max(std::min(u,NumPoints-1),0);
 				temp+=pSrcArray[u*nChannels+l]*pGaussian[j+size];
 			}
 			pDstArray[i*nChannels+l]=temp;

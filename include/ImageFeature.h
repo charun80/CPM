@@ -1,7 +1,7 @@
 #pragma once
 #include "Image.h"
-#include "math.h"
-#include "memory.h"
+#include <cmath>
+#include <memory.h>
 #include <vector>
 
 #ifndef M_PI
@@ -87,7 +87,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 		_cos   = cos(theta*k);
 		for(int i = 0;i<nPixels; i++)
 		{
-			temp = __max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0);
+			temp = std::max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0.f);
 			if(alpha>1)
 				temp = pow(temp,alpha);
 			imband.pData[i*nBins+k] = temp*mag.pData[i];
@@ -136,16 +136,16 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 			int count = 0;
 			for (int ii = -1; ii <= 2; ii++){
 				for (int jj = -1; jj <= 2; jj++){
-					int y = __min(__max(y_shift + i*stepSize + ii*cellSize, 0), height - 1);
-					int x = __min(__max(x_shift + j*stepSize + jj*cellSize, 0), width - 1);
+					int y = std::min(std::max(y_shift + i*stepSize + ii*cellSize, 0), height - 1);
+					int x = std::min(std::max(x_shift + j*stepSize + jj*cellSize, 0), width - 1);
 
 					// the following code is the same as the above two for debugging purposes
 					//int y = y_shift+i*stepSize+ii*cellSize;
 					//int x = x_shift+j*stepSize+jj*cellSize;
 					//if (x<0 || x>=width)
-					//	x = __min(__max(x,0),width-1);
+					//	x = std::min(std::max(x,0),width-1);
 					//if (y<0 || y>=height)
-					//	y= __min(__max(y,0),height-1);
+					//	y= std::min(std::max(y,0),height-1);
 
 					memcpy(sift_cell.pData + count*nBins, imband_cell.pData + (y*width + x)*nBins, sizeof(float)*nBins);
 					count++;
@@ -187,7 +187,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 			int offset = (i*sift_width + j)*siftdim;
 			//memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 			for (int k = 0; k < siftdim; k++)
-				imsift.pData[offset + k] = (unsigned char)__min(sift_cell.pData[k] / (mag + 0.01) * 255, 255);//(unsigned char) __min(sift_cell.pData[k]/mag*512,255);
+				imsift.pData[offset + k] = (unsigned char)std::min(sift_cell.pData[k] / (mag + 0.01) * 255, 255);//(unsigned char) std::min(sift_cell.pData[k]/mag*512,255);
 #endif
 		}//*/
 	}
@@ -255,7 +255,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 		_cos   = cos(theta*k);
 		for(int i = 0;i<nPixels; i++)
 		{
-			temp = __max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0);
+			temp = std::max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0.f);
 			if(alpha>1)
 				temp = pow(temp,alpha);
 			imband.pData[i*nBins+k] = temp*mag.pData[i];
@@ -265,7 +265,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 	int maxCellSize = cellSizeVect[0];
 	int nScales = cellSizeVect.size();
 	for(int h=1;h<nScales;h++)
-		maxCellSize = __max(maxCellSize,cellSizeVect[h]);
+		maxCellSize = std::max(maxCellSize,cellSizeVect[h]);
 
 	// allocate buffer for the sift image
 	int siftdim = nBins*16;
@@ -313,16 +313,16 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 				for(int ii = -1;ii<=2;ii++)
 					for(int jj=-1;jj<=2;jj++)
 					{
-						int y = __min(__max(y_shift+i*stepSize+ii*cellSize,0),height-1);
-						int x = __min(__max(x_shift+j*stepSize+jj*cellSize,0),width-1);
+						int y = std::min(std::max(y_shift+i*stepSize+ii*cellSize,0),height-1);
+						int x = std::min(std::max(x_shift+j*stepSize+jj*cellSize,0),width-1);
 
 						// the following code is the same as the above two for debugging purposes
 						//int y = y_shift+i*stepSize+ii*cellSize;
 						//int x = x_shift+j*stepSize+jj*cellSize;
 						//if (x<0 || x>=width)
-						//	x = __min(__max(x,0),width-1);
+						//	x = std::min(std::max(x,0),width-1);
 						//if (y<0 || y>=height)
-						//	y= __min(__max(y,0),height-1);
+						//	y= std::min(std::max(y,0),height-1);
 
 						memcpy(sift_cell.pData+count*nBins,imband_cell.pData+(y*width+x)*nBins,sizeof(float)*nBins);
 						count++;
@@ -332,7 +332,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 				int offset = (i*sift_width+j)*siftdim*nScales+h*siftdim;
 				//memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 				for(int k = 0;k<siftdim;k++)
-					imsift.pData[offset+k] = (unsigned char)__min(sift_cell.pData[k]/(mag+0.01)*255,255);//(unsigned char) __min(sift_cell.pData[k]/mag*512,255);
+					imsift.pData[offset+k] = (unsigned char)std::min(sift_cell.pData[k]/(mag+0.01)*255,255.);//(unsigned char) std::min(sift_cell.pData[k]/mag*512,255);
 			}//*/
 	}
 }
