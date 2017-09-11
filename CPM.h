@@ -32,20 +32,51 @@ corresponding to one match per line.
     #define _NO_IMAGE_IO
 #endif
 
-
-
-
 #include "ImagePyramid.h"
+
+
+struct sCPMParameters
+{
+	int m_Step_i;
+
+	bool m_IsStereo_b;
+
+	int   m_maxIters_i;
+	float m_StopIterRatio_f;
+
+	float m_pydRatio_f;
+
+	int m_maxDisplacement_i;
+	int m_checkThreshold_i;
+
+	int m_borderWidth_i;
+
+    // default parameters
+	sCPMParameters()
+        : m_Step_i( 3 )
+        , m_IsStereo_b(false)
+        , m_maxIters_i( 8 )
+        , m_StopIterRatio_f( 0.05 )
+        , m_pydRatio_f( 0.5 )
+        , m_maxDisplacement_i( 400 )
+        , m_checkThreshold_i( 3 )
+        , m_borderWidth_i( 5 )
+    {}
+};
+
+
 
 class CPM
 {
 public:
+
 	CPM();
+	explicit CPM( const sCPMParameters &f_Param );
+
 	~CPM();
 
 	int Matching(FImage& img1, FImage& img2, FImage& outMatches);
-	void SetStereoFlag(int needStereo);
-	void SetStep(int step);
+
 
 private:
 	void CrossCheck(IntImage& seeds, FImage& seedsFlow, FImage& seedsFlow2, IntImage& kLabel2, int* valid, float th);
@@ -68,15 +99,8 @@ private:
 	float MinimalCircle(float* x, float*y, int n, float* centerX = NULL, float* centerY = NULL);
 
 	//
-	int _step;
-	int _maxIters;
-	float _stopIterRatio;
-	float _pydRatio;
+	const sCPMParameters m_Param;
 
-	int _isStereo;
-	int _maxDisplacement;
-	float _checkThreshold;
-	int _borderWidth;
 
 	IntImage _kLabels, _kLabels2;
 

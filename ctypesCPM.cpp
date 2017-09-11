@@ -32,8 +32,10 @@ DLL_PUBLIC sFlowResult computeCPMFlow(
     // compute flow
     FImage l_cpmMatches;
     {
-        CPM cpm;
-        cpm.SetStep( f_nSteps );
+        sCPMParameters l_CPMParam;
+        l_CPMParam.m_Step_i = f_nSteps;
+
+        CPM cpm(l_CPMParam);
         cpm.Matching( l_cpmImg1, l_cpmImg2, l_cpmMatches );
     }
 
