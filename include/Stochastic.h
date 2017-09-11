@@ -353,7 +353,7 @@ double CStochastic::norm(T* X,int Dim)
 	int i;
 	for(i=0;i<Dim;i++)
 		result+=X[i]*X[i];
-	result=sqrt(result);
+	result=std::sqrt(result);
 	return result;
 }
 
