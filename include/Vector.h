@@ -137,9 +137,9 @@ Vector<T>::Vector(int ndim, const T *data)
 	nDim=ndim;
 	pData=new T[nDim];
 	if(data!=NULL)
-		memcpy(pData,data,sizeof(T)*nDim);
+		std::memcpy(pData,data,sizeof(T)*nDim);
 	else
-		memset(pData,0,sizeof(T)*nDim);
+		std::memset(pData,0,sizeof(T)*nDim);
 }
 
 template <class T>
@@ -187,7 +187,7 @@ void Vector<T>::copyData(const Vector &vect)
 		nDim=vect.nDim;
 		pData=new T[nDim];
 	}
-	memcpy(pData,vect.pData,sizeof(T)*nDim);
+	std::memcpy(pData,vect.pData,sizeof(T)*nDim);
 }
 
 template <class T>
@@ -201,7 +201,7 @@ template <class T>
 void Vector<T>::reset()
 {
 	if(pData!=NULL)
-		memset(pData,0,sizeof(T)*nDim);
+		std::memset(pData,0,sizeof(T)*nDim);
 }
 
 

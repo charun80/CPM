@@ -94,7 +94,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 		{
 			temp = std::max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0.f);
 			if(alpha>1)
-				temp = pow(temp,alpha);
+				temp = std::pow(temp,alpha);
 			imband.pData[i*nBins+k] = temp*mag.pData[i];
 		}
 	}
@@ -152,14 +152,14 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 					//if (y<0 || y>=height)
 					//	y= std::min(std::max(y,0),height-1);
 
-					memcpy(sift_cell.pData + count*nBins, imband_cell.pData + (y*width + x)*nBins, sizeof(float)*nBins);
+					std::memcpy(sift_cell.pData + count*nBins, imband_cell.pData + (y*width + x)*nBins, sizeof(float)*nBins);
 					count++;
 				}
 			}
 			// normalize the SIFT descriptor
 #ifdef WITH_SSE
 			int offset = (i*sift_width + j)*siftdim;
-			//memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
+			//std::memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 			unsigned char* dst = imsift.pData + offset;
 			//
 			hu_m128* src = (hu_m128*)sift_cell.pData;
@@ -190,7 +190,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 #else
 			float mag = std::sqrt(sift_cell.norm2());
 			int offset = (i*sift_width + j)*siftdim;
-			//memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
+			//std::memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 			for (int k = 0; k < siftdim; k++)
 				imsift.pData[offset + k] = (unsigned char)std::min(sift_cell.pData[k] / (mag + 0.01) * 255, 255);//(unsigned char) std::min(sift_cell.pData[k]/mag*512,255);
 #endif
@@ -262,7 +262,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 		{
 			temp = std::max(gradient.pData[i*2]*_cos + gradient.pData[i*2+1]*_sin,0.f);
 			if(alpha>1)
-				temp = pow(temp,alpha);
+				temp = std::pow(temp,alpha);
 			imband.pData[i*nBins+k] = temp*mag.pData[i];
 		}
 	}
@@ -329,13 +329,13 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 						//if (y<0 || y>=height)
 						//	y= std::min(std::max(y,0),height-1);
 
-						memcpy(sift_cell.pData+count*nBins,imband_cell.pData+(y*width+x)*nBins,sizeof(float)*nBins);
+						std::memcpy(sift_cell.pData+count*nBins,imband_cell.pData+(y*width+x)*nBins,sizeof(float)*nBins);
 						count++;
 					}
 				// normalize the SIFT descriptor
 				float mag = std::sqrt(sift_cell.norm2());
 				int offset = (i*sift_width+j)*siftdim*nScales+h*siftdim;
-				//memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
+				//std::memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 				for(int k = 0;k<siftdim;k++)
 					imsift.pData[offset+k] = (unsigned char)std::min(sift_cell.pData[k]/(mag+0.01)*255,255.);//(unsigned char) std::min(sift_cell.pData[k]/mag*512,255);
 			}//*/

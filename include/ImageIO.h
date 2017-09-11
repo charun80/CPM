@@ -81,7 +81,7 @@ void ImageIO::showGrayImageAsColor(const char* winname, const unsigned char* pIm
 			if (IsFloat){
 				grayVal = pImagePlane[i*width + j] * 255;
 			}
-			memcpy(im.data + i*im.step + j * 3, colorTbl[grayVal], 3);
+			std::memcpy(im.data + i*im.step + j * 3, colorTbl[grayVal], 3);
 		}
 	}
 
@@ -145,7 +145,7 @@ cv::Mat ImageIO::CvmatFromPixels(const T* pImagePlane, int width, int height, in
 	if (typeid(T) == typeid(unsigned char) && imtype == standard)
 	{
 		for (int i = 0; i < height; i++)
-			memcpy(im.data + i*im.step, pImagePlane + i*im.step, width*nchannels);
+			std::memcpy(im.data + i*im.step, pImagePlane + i*im.step, width*nchannels);
 	}
 	else
 	{
@@ -198,7 +198,7 @@ void ImageIO::CvmatToPixels(const cv::Mat& cvInImg, T*& pOutImagePlane, int& wid
 	if (typeid(T) == typeid(unsigned char))
 	{
 		for (int i = 0; i < height; i++)
-			memcpy(pOutImagePlane + i*cvInImg.step, cvInImg.data + i*cvInImg.step, width*nchannels);
+			std::memcpy(pOutImagePlane + i*cvInImg.step, cvInImg.data + i*cvInImg.step, width*nchannels);
 		return;
 	}
 
@@ -312,7 +312,7 @@ bool ImageIO::writeImage(const QString& filename, const T*& pImagePlane,int widt
 	nElements=nPixels*nchannels;
 	unsigned char* pTempBuffer;
 	pTempBuffer=new unsigned char[nPixels*4];
-	memset(pTempBuffer,0,nPixels*4);
+	std::memset(pTempBuffer,0,nPixels*4);
 
 	// check whether the type is float point
 	bool IsFloat=false;
@@ -370,7 +370,7 @@ bool ImageIO::writeImage(const QString& filename, const T* pImagePlane,int width
 	nElements=nPixels*nchannels;
 	unsigned char* pTempBuffer;
 	pTempBuffer=new unsigned char[nPixels*4];
-	memset(pTempBuffer,0,nPixels*4);
+	std::memset(pTempBuffer,0,nPixels*4);
 
 	// check whether the type is float point
 	bool IsFloat=false;

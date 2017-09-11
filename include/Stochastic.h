@@ -104,7 +104,7 @@ void CStochastic::sort(int Number,T* pData,int *pIndex,SortType m_SortType)
 	int i,j,offset_extreme,*flag;
 	double extreme;
 	flag=new int[Number];
-	memset(flag,0,sizeof(int)*Number);
+	std::memset(flag,0,sizeof(int)*Number);
 	for(i=0;i<Number;i++)
 	{
 		if(m_SortType==SortDescending)
@@ -178,8 +178,8 @@ template <class T1,class T2>
 void CStochastic::ComputeMeanCovariance(int Dim,int NumData,T1* pData,T2* pMean,T2* pCovariance,double* pWeight)
 {
 	int i,j,k;
-	memset(pMean,0,sizeof(T2)*Dim);
-	memset(pCovariance,0,sizeof(T2)*Dim*Dim);
+	std::memset(pMean,0,sizeof(T2)*Dim);
+	std::memset(pCovariance,0,sizeof(T2)*Dim*Dim);
 
 	bool IsWeightLoaded=false;
 	double Sum;
@@ -242,7 +242,7 @@ template <class T1,class T2>
 void CStochastic::ComputeVectorMean(int Dim,int NumData,T1* pData,T2* pMean,double* pWeight)
 {
 	int i,j;
-	memset(pMean,0,sizeof(T2)*Dim);
+	std::memset(pMean,0,sizeof(T2)*Dim);
 	bool IsWeightLoaded;
 	double Sum;
 	if(pWeight=NULL)
@@ -323,7 +323,7 @@ _CStochastic_KMeanClustering_InitializePartition:
 		// step 2. compute mean
 		for(i=0;i<NumClusters;i++)
 		{
-			memset(pCenters[i],0,sizeof(double)*Dim);
+			std::memset(pCenters[i],0,sizeof(double)*Dim);
 			ClusterSampleNumber=0;
 			for(j=0;j<NumData;j++)
 				if(pPartition[j]==i)
