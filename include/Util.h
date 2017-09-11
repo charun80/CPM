@@ -12,6 +12,9 @@
 #include <sys/time.h>
 #endif
 
+namespace cpm
+{
+
 template <class T>
 class _CTimer
 {
@@ -109,6 +112,8 @@ static unsigned char gray2ColorTb[256][3] = {
 		memcpy(m_colorTbl[i], gray2ColorTb[i], 3);
 	}
 }
+
+}  // namespace cpm
 
 #endif // _UTIL_H_
 

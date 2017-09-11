@@ -1,7 +1,7 @@
 
 #include "CPM.h"
 
-void WriteMatches(const char *filename, FImage& inMat)
+void WriteMatches(const char *filename, cpm::FImage& inMat)
 {
 	int len = inMat.height();
 	FILE *fid = fopen(filename, "w");
@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	FImage img1, img2;
+	cpm::FImage img1, img2;
 
 	img1.imread(argv[1]);
 	img2.imread(argv[2]);
@@ -40,14 +40,14 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	CTimer totalT;
-	FImage matches;
+	cpm::CTimer totalT;
+	cpm::FImage matches;
 
-    sCPMParameters l_CPMParam;
+    cpm::sCPMParameters l_CPMParam;
     l_CPMParam.m_Step_i = step;
 
-	CPM cpm(l_CPMParam);
-	cpm.Matching(img1, img2, matches);
+	cpm::CPM cpm_obj(l_CPMParam);
+	cpm_obj.Matching(img1, img2, matches);
 
 	totalT.toc("total time: ");
 

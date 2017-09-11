@@ -9,6 +9,10 @@
 #include <xmmintrin.h>
 #endif
 
+namespace cpm
+{
+
+
 template <class T>
 inline void* xmalloc(T size){
 #ifdef WITH_SSE
@@ -43,5 +47,6 @@ typedef union _m128{
 
 #endif
 
+}  // namespace cpm
 
 #endif

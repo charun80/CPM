@@ -3,6 +3,10 @@
 
 #include "Image.h"
 
+namespace cpm
+{
+
+
 template <class T>
 class ImagePyramid
 {
@@ -118,5 +122,7 @@ void ImagePyramid<T>::ConstructPyramidLevels(const FImage& image, float ratio /*
 		}
 	}
 }
+
+}  // namespace cpm
 
 #endif

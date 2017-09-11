@@ -17,11 +17,11 @@ DLL_PUBLIC sFlowResult computeCPMFlow(
     const size_t l_imgSize = sizeof(float) * l_numPixels;
 
     // obtain input
-    FImage l_cpmImg1, l_cpmImg2;
+    cpm::FImage l_cpmImg1, l_cpmImg2;
 
     l_cpmImg1.allocate( f_nCols_i, f_nRows_i, f_nChannels );
     //l_cpmImg1.allocate( f_nRows_i, f_nCols_i, 3);
-    memcpy( l_cpmImg1.pData, f_inImg1_data_pf, l_imgSize );
+    std::memcpy( l_cpmImg1.pData, f_inImg1_data_pf, l_imgSize );
     //l_cpmImg1.setColorType ( BGR );
 
     l_cpmImg2.allocate( f_nCols_i, f_nRows_i, f_nChannels );
@@ -30,13 +30,13 @@ DLL_PUBLIC sFlowResult computeCPMFlow(
     //l_cpmImg2.setColorType ( BGR );
 
     // compute flow
-    FImage l_cpmMatches;
+    cpm::FImage l_cpmMatches;
     {
-        sCPMParameters l_CPMParam;
+        cpm::sCPMParameters l_CPMParam;
         l_CPMParam.m_Step_i = f_nSteps;
 
-        CPM cpm(l_CPMParam);
-        cpm.Matching( l_cpmImg1, l_cpmImg2, l_cpmMatches );
+        cpm::CPM cpm_obj(l_CPMParam);
+        cpm_obj.Matching( l_cpmImg1, l_cpmImg2, l_cpmMatches );
     }
 
     const int l_numMatches = l_cpmMatches.height();

@@ -7,6 +7,9 @@
 #include "project.h"
 #include <typeinfo>
 
+namespace cpm
+{
+
 //----------------------------------------------------------------------------------
 // class to handle basic image processing functions
 // this is a collection of template functions. These template functions are
@@ -919,5 +922,8 @@ void ImageProcessing::generate1DGaussian(T*& pImage, int wsize, float sigma)
 	for(int i = 0;i<winlength;i++)
 		pImage[i]/=total;
 }
+
+
+}  // namespace cpm
 
 #endif

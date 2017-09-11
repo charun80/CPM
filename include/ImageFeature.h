@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _IMAGEFEATURES_H
+#define _IMAGEFEATURES_H
+
 #include "Image.h"
 #include <cmath>
 #include <memory.h>
@@ -7,6 +9,9 @@
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433
 #endif
+
+namespace cpm
+{
 
 
 class ImageFeature
@@ -336,3 +341,8 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 			}//*/
 	}
 }
+
+}  // namespace cpm
+
+
+#endif
