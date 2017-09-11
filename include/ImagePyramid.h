@@ -48,7 +48,7 @@ for(int i=1;i<nLevels;i++)
 DImage foo;
 float sigma=baseSigma*i;
 image.GaussianSmoothing(foo,sigma,sigma*2.5);
-foo.imresize(ImPyramid[i],pow(ratio,i));
+foo.imresize(ImPyramid[i],std::pow(ratio,i));
 }
 }//*/
 
@@ -79,12 +79,12 @@ void ImagePyramid<T>::ConstructPyramid(const FImage& image, float ratio /*= 0.8*
 		{
 			float sigma = baseSigma*i;
 			image.GaussianSmoothing(foo, sigma, sigma * 3);
-			foo.imresize(ImPyramid[i], pow(ratio, i));
+			foo.imresize(ImPyramid[i], std::pow(ratio, i));
 		}
 		else
 		{
 			ImPyramid[i - n].GaussianSmoothing(foo, nSigma, nSigma * 3);
-			float rate = (float)pow(ratio, i)*image.width() / foo.width();
+			float rate = (float)std::pow(ratio, i)*image.width() / foo.width();
 			foo.imresize(ImPyramid[i], rate);
 		}
 	}
@@ -112,12 +112,12 @@ void ImagePyramid<T>::ConstructPyramidLevels(const FImage& image, float ratio /*
 		{
 			float sigma = baseSigma*i;
 			image.GaussianSmoothing(foo, sigma, sigma * 3);
-			foo.imresize(ImPyramid[i], pow(ratio, i));
+			foo.imresize(ImPyramid[i], std::pow(ratio, i));
 		}
 		else
 		{
 			ImPyramid[i - n].GaussianSmoothing(foo, nSigma, nSigma * 3);
-			float rate = (float)pow(ratio, i)*image.width() / foo.width();
+			float rate = (float)std::pow(ratio, i)*image.width() / foo.width();
 			foo.imresize(ImPyramid[i], rate);
 		}
 	}

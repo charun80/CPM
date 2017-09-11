@@ -171,7 +171,7 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 	int tmpIdx = 0;
 	for (int i = 0; i < numV; i++){
 		if (tmpMatch[4 * i + 0] >= 0){
-			memcpy(outMatches.rowPtr(tmpIdx), tmpMatch.rowPtr(i), sizeof(int) * 4);
+			std::memcpy(outMatches.rowPtr(tmpIdx), tmpMatch.rowPtr(i), sizeof(int) * 4);
 			tmpIdx++;
 		}
 	}
@@ -242,8 +242,8 @@ float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, i
 	int sum0 = 0;
 	int sum1 = 0;
 	for (idx = 0; idx < iterCnt; idx++){
-		memcpy(&r1, _p1, sizeof(hu_m128));
-		memcpy(&r2, _p2, sizeof(hu_m128));
+		std::memcpy(&r1, _p1, sizeof(hu_m128));
+		std::memcpy(&r2, _p2, sizeof(hu_m128));
 		_p1 += sizeof(hu_m128);
 		_p2 += sizeof(hu_m128);
 		r3.mi = _mm_sad_epu8(r1.mi, r2.mi);
@@ -300,7 +300,7 @@ int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCI
 	{
 		int updateCount = 0;
 
-		memset(vFlags, 0, sizeof(int)*ptNum);
+		std::memset(vFlags, 0, sizeof(int)*ptNum);
 
 		int startPos = 0, endPos = ptNum, step = 1;
 		if (iter % 2 == 1){
@@ -404,7 +404,7 @@ void CPM::PyramidRandomSearch(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage*
 	float* searchRadius = new float[numV];
 
 	// random Initialization on coarsest level
-	int initR = m_Param.m_maxDisplacement_i* pow(ratio, nLevels - 1) + 0.5;
+	int initR = m_Param.m_maxDisplacement_i* std::pow(ratio, nLevels - 1) + 0.5;
 	for (int i = 0; i < numV; i++){
 		pydSeedsFlow[nLevels - 1][2 * i] = rand() % (2 * initR + 1) - initR;
 		if (m_Param.m_IsStereo_b){
@@ -463,8 +463,8 @@ void CPM::OnePass(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* im1f, UCIma
 		int sw = pyd1[i].width();
 		int sh = pyd1[i].height();
 		for (int n = 0; n < numV; n++){
-			pydSeeds[i][2 * n] = ImageProcessing::EnforceRange(seeds[2 * n] * pow(ratio, i), sw);
-			pydSeeds[i][2 * n + 1] = ImageProcessing::EnforceRange(seeds[2 * n + 1] * pow(ratio, i), sh);
+			pydSeeds[i][2 * n] = ImageProcessing::EnforceRange(seeds[2 * n] * std::pow(ratio, i), sw);
+			pydSeeds[i][2 * n + 1] = ImageProcessing::EnforceRange(seeds[2 * n + 1] * std::pow(ratio, i), sh);
 		}
 	}
 
@@ -473,7 +473,7 @@ void CPM::OnePass(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* im1f, UCIma
 	// scale
 	// int b = m_Param.m_borderWidth_i;  WARN: unused variable
 	for (int i = 0; i < nLevels; i++){
-		pydSeedsFlow[i].Multiplywith(pow(1. / ratio, i));
+		pydSeedsFlow[i].Multiplywith(std::pow(1. / ratio, i));
 	}
 
 	delete[] pydSeeds;

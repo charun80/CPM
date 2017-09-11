@@ -162,15 +162,15 @@ void ImageProcessing::BGR2Lab(T1* pSrcImage, T2* pDstImage, int width, int heigh
 		float Z = 0.019334 * r + 0.119193 * g + 0.950227 * b;
 		X /= 0.950456;
 		Z /= 1.088754;
-		float Y3 = pow(Y, 1. / 3);
-		float fX = X > T ? pow(X, 1. / 3) : 7.787 * X + 16 / 116.;
+		float Y3 = std::pow(Y, 1. / 3);
+		float fX = X > T ? std::pow(X, 1. / 3) : 7.787 * X + 16 / 116.;
 		float fY = Y > T ? Y3 : 7.787 * Y + 16 / 116.;
-		float fZ = Z > T ? pow(Z, 1. / 3) : 7.787 * Z + 16 / 116.;
+		float fZ = Z > T ? std::pow(Z, 1. / 3) : 7.787 * Z + 16 / 116.;
 		float L = Y > T ? 116 * Y3 - 16.0 : 903.3 * Y;
 		float A = 500 * (fX - fY);
 		float B = 200 * (fY - fZ);
 		// correct L*a*b*: dark area or light area have less reliable colors
-		float correct_lab = exp(-color_attenuation*pow(pow(L / 100, 2) - 0.6, 2));
+		float correct_lab = exp(-color_attenuation*std::pow(std::pow(L / 100, 2) - 0.6, 2));
 		pLab[0] = L;
 		pLab[1] = A*correct_lab;
 		pLab[2] = B*correct_lab;
@@ -200,7 +200,7 @@ inline void ImageProcessing::BilinearInterpolate(const T1* pImage,int width,int 
 	dx=std::max(std::min(x-xx,1.f),0.f);
 	dy=std::max(std::min(y-yy,1.f),0.f);
 
-	memset(result, 0, sizeof(T2)*nChannels);
+	std::memset(result, 0, sizeof(T2)*nChannels);
 	for(m=0;m<=1;m++)
 		for(n=0;n<=1;n++)
 		{
@@ -272,7 +272,7 @@ void ImageProcessing::ResizeImage(const T1* pSrcImage, T2* pDstImage, int SrcWid
 	int DstWidth,DstHeight;
 	DstWidth=(float)SrcWidth*Ratio;
 	DstHeight=(float)SrcHeight*Ratio;
-	memset(pDstImage,0,sizeof(T2)*DstWidth*DstHeight*nChannels);
+	std::memset(pDstImage,0,sizeof(T2)*DstWidth*DstHeight*nChannels);
 
 	float x,y;
 
@@ -308,7 +308,7 @@ void ImageProcessing::ResizeImage(const T1 *pSrcImage, T2 *pDstImage, int SrcWid
 {
 	float xRatio=(float)DstWidth/SrcWidth;
 	float yRatio=(float)DstHeight/SrcHeight;
-	memset(pDstImage,0, sizeof(T2)*DstWidth*DstHeight*nChannels);
+	std::memset(pDstImage,0, sizeof(T2)*DstWidth*DstHeight*nChannels);
 
 	float x,y;
 
@@ -346,7 +346,7 @@ void ImageProcessing::ResizeImage(const T1 *pSrcImage, T2 *pDstImage, int SrcWid
 template <class T1,class T2>
 void ImageProcessing::hfiltering(const T1* pSrcImage,T2* pDstImage,int width,int height,int nChannels,const float* pfilter1D,int fsize)
 {
-	memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
+	std::memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
 	T2* pBuffer;
 	float w;
 	int i,j,l,k,offset,jj;
@@ -371,7 +371,7 @@ void ImageProcessing::hfiltering(const T1* pSrcImage,T2* pDstImage,int width,int
 template <class T1,class T2>
 void ImageProcessing::hfiltering_transpose(const T1* pSrcImage,T2* pDstImage,int width,int height,int nChannels,const float* pfilter1D,int fsize)
 {
-	memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
+	std::memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
 	const T1* pBuffer;
 	float w;
 	int i,j,l,k,offset,jj;
@@ -468,7 +468,7 @@ void ImageProcessing::Medianfiltering(const T1* pSrcImage, T2* pDstImage, int wi
 	}
 	free(pTmpSrc);
 
-	memcpy(pDstImage, tmpImg, width*height*nChannels*sizeof(T2));
+	std::memcpy(pDstImage, tmpImg, width*height*nChannels*sizeof(T2));
 	delete[] tmpImg;
 }
 
@@ -478,7 +478,7 @@ void ImageProcessing::Medianfiltering(const T1* pSrcImage, T2* pDstImage, int wi
 template <class T1,class T2>
 void ImageProcessing::vfiltering(const T1* pSrcImage,T2* pDstImage,int width,int height,int nChannels,const float* pfilter1D,int fsize)
 {
-	memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
+	std::memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
 	T2* pBuffer;
 	float w;
 	int i,j,l,k,ii;  // ,offset  WARN: unsued variable
@@ -502,7 +502,7 @@ void ImageProcessing::vfiltering(const T1* pSrcImage,T2* pDstImage,int width,int
 template <class T1,class T2>
 void ImageProcessing::vfiltering_transpose(const T1* pSrcImage,T2* pDstImage,int width,int height,int nChannels,const float* pfilter1D,int fsize)
 {
-	memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
+	std::memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
 	const T1* pBuffer;
 	float w;
 	int i,j,l,k,offset,ii;
@@ -564,7 +564,7 @@ void ImageProcessing::filtering_transpose(const T1* pSrcImage,T2* pDstImage,int 
 	float w;
 	int i,j,u,v,k,ii,jj,wsize,offset;
 	wsize=fsize*2+1;
-	memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
+	std::memset(pDstImage,0,sizeof(T2)*width*height*nChannels);
 	for(i=0;i<height;i++)
 		for(j=0;j<width;j++)
 		{
@@ -707,7 +707,7 @@ void ImageProcessing::getPatch(const T1* pSrcImage,T2* pPatch,int width,int heig
 template <class T1,class T2>
 void ImageProcessing::warpImage(T1 *pWarpIm2, const T1 *pIm1, const T1 *pIm2, const T2 *pVx, const T2 *pVy, int width, int height, int nChannels)
 {
-	memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
+	std::memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
 	for(int i=0;i<height;i++)
 		for(int j=0;j<width;j++)
 		{
@@ -729,7 +729,7 @@ void ImageProcessing::warpImage(T1 *pWarpIm2, const T1 *pIm1, const T1 *pIm2, co
 template <class T1,class T2>
 void ImageProcessing::warpImageFlow(T1 *pWarpIm2, const T1 *pIm1, const T1 *pIm2, const T2 *pFlow, int width, int height, int nChannels)
 {
-	memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
+	std::memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
 	for(int i=0;i<height;i++)
 		for(int j=0;j<width;j++)
 		{
@@ -751,7 +751,7 @@ void ImageProcessing::warpImageFlow(T1 *pWarpIm2, const T1 *pIm1, const T1 *pIm2
 template <class T1,class T2>
 void ImageProcessing::warpImage(T1 *pWarpIm2,const T1 *pIm2, const T2 *pVx, const T2 *pVy, int width, int height, int nChannels)
 {
-	memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
+	std::memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
 	for(int i=0;i<height;i++)
 		for(int j=0;j<width;j++)
 		{
@@ -769,7 +769,7 @@ void ImageProcessing::warpImage(T1 *pWarpIm2,const T1 *pIm2, const T2 *pVx, cons
 template <class T1,class T2>
 void ImageProcessing::warpImage_transpose(T1 *pWarpIm2,const T1 *pIm2, const T2 *pVx, const T2 *pVy, int width, int height, int nChannels)
 {
-	memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
+	std::memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
 	for(int i=0;i<height;i++)
 		for(int j=0;j<width;j++)
 		{
@@ -791,7 +791,7 @@ void ImageProcessing::warpImage_transpose(T1 *pWarpIm2,const T1 *pIm2, const T2 
 template <class T1,class T2>
 void ImageProcessing::warpImage(T1 *pWarpIm2,const T1 *pIm2, const T2 *flow, int width, int height, int nChannels)
 {
-	memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
+	std::memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
 	for(int i=0;i<height;i++)
 		for(int j=0;j<width;j++)
 		{
@@ -809,7 +809,7 @@ void ImageProcessing::warpImage(T1 *pWarpIm2,const T1 *pIm2, const T2 *flow, int
 template <class T1,class T2>
 void ImageProcessing::warpImage_transpose(T1 *pWarpIm2,const T1 *pIm2, const T2 *flow, int width, int height, int nChannels)
 {
-	memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
+	std::memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
 	for(int i=0;i<height;i++)
 		for(int j=0;j<width;j++)
 		{
@@ -829,7 +829,7 @@ void ImageProcessing::warpImage_transpose(T1 *pWarpIm2,const T1 *pIm2, const T2 
 template <class T1,class T2,class T3>
 void ImageProcessing::warpImage(T1 *pWarpIm2, T3* pMask,const T1 *pIm1, const T1 *pIm2, const T2 *pVx, const T2 *pVy, int width, int height, int nChannels)
 {
-	memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
+	std::memset(pWarpIm2,0,sizeof(T1)*width*height*nChannels);
 	for(int i=0;i<height;i++)
 		for(int j=0;j<width;j++)
 		{
@@ -862,7 +862,7 @@ void ImageProcessing::cropImage(const T1 *pSrcImage, int SrcWidth, int SrcHeight
 	if(typeid(T1)==typeid(T2))
 	{
 		for(int i=0;i<DstHeight;i++)
-			memcpy(pDstImage+i*DstWidth*nChannels,pSrcImage+((i+Top)*SrcWidth+Left)*nChannels,sizeof(T1)*DstWidth*nChannels);
+			std::memcpy(pDstImage+i*DstWidth*nChannels,pSrcImage+((i+Top)*SrcWidth+Left)*nChannels,sizeof(T1)*DstWidth*nChannels);
 		return;
 	}
 	int offsetSrc,offsetDst;

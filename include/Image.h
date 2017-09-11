@@ -521,7 +521,7 @@ Image<T>::Image(int width,int height,int nchannels)
 	pData=NULL;
 	pData = (T*)xmalloc(nElements * sizeof(T));
 	if(nElements>0)
-		memset(pData,0,sizeof(T)*nElements);
+		std::memset(pData,0,sizeof(T)*nElements);
 	IsDerivativeImage=false;
 	colorType = DATA;
 }
@@ -557,7 +557,7 @@ void Image<T>::allocate(int width,int height,int nchannels)
 	if(nElements>0)
 	{
 		pData = (T*)xmalloc(nElements * sizeof(T));
-		memset(pData,0,sizeof(T)*nElements);
+		std::memset(pData,0,sizeof(T)*nElements);
 	}
 }
 
@@ -612,7 +612,7 @@ template <class T>
 void Image<T>::reset()
 {
 	if(pData!=NULL)
-		memset(pData,0,sizeof(T)*nElements);
+		std::memset(pData,0,sizeof(T)*nElements);
 }
 
 template <class T>
@@ -634,7 +634,7 @@ template <class T>
 void Image<T>::setPixel(int row, int col, T* valPtr)
 {
 	T* ptr = pixPtr(row, col);
-	memcpy(ptr, valPtr, sizeof(T)*nChannels);
+	std::memcpy(ptr, valPtr, sizeof(T)*nChannels);
 }
 
 //------------------------------------------------------------------------------------------
@@ -659,7 +659,7 @@ void Image<T>::copyData(const Image<T>& other)
 		pData = (T*)xmalloc(nElements * sizeof(T));
 	}
 	if(nElements>0)
-		memcpy(pData,other.pData,sizeof(T)*nElements);
+		std::memcpy(pData,other.pData,sizeof(T)*nElements);
 }
 
 template <class T>
@@ -1760,14 +1760,14 @@ void Image<T>::AddBorder(Image<T>& outImg, int borderWidth) const
 			y = ImageProcessing::EnforceRange(y, imHeight);
 			T* dst = outImg.pData + (i*extW + j)*ch;
 			T* src = pData + (y*imWidth + x)*ch;
-			memcpy(dst, src, sizeof(T)*ch);
+			std::memcpy(dst, src, sizeof(T)*ch);
 		}
 	}
 #else
-	memset(outImg.pData, 0, outImg.nElements*sizeof(T));
+	std::memset(outImg.pData, 0, outImg.nElements*sizeof(T));
 	for (int i = 0; i < imHeight; i++){
 		T* dstPtr = outImg.rowPtr(i + borderWidth) + borderWidth*ch;
-		memcpy(dstPtr, pData + i*imWidth*ch, imWidth*ch*sizeof(T));
+		std::memcpy(dstPtr, pData + i*imWidth*ch, imWidth*ch*sizeof(T));
 	}
 #endif
 }
