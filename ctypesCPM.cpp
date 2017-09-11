@@ -13,7 +13,7 @@ DLL_PUBLIC sFlowResult computeCPMFlow(
 {
     sFlowResult l_Result = {NULL,0};
 
-    const size_t l_numPixels = f_nRows_i * f_nCols_i * 3;
+    const size_t l_numPixels = f_nRows_i * f_nCols_i * f_nChannels;
     const size_t l_imgSize = sizeof(float) * l_numPixels;
 
     // obtain input
