@@ -1276,7 +1276,7 @@ void Image<T>::gradientmag(Image<T1> &image) const
 			temp+=Ixdata[offset+k]*Ixdata[offset+k];
 			temp+=Iydata[offset+k]*Iydata[offset+k];
 		}
-		imagedata[i]=sqrt(temp);
+		imagedata[i]=std::sqrt(temp);
 	}
 }
 

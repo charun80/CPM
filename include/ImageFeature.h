@@ -58,7 +58,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 	{
 		int offset = i*nchannels;
 		for(int j = 0;j<nchannels;j++)
-			magsrc.pData[offset+j] = sqrt(imdx.pData[offset+j]*imdx.pData[offset+j]+imdy.pData[offset+j]*imdy.pData[offset+j]);
+			magsrc.pData[offset+j] = std::sqrt(imdx.pData[offset+j]*imdx.pData[offset+j]+imdy.pData[offset+j]*imdy.pData[offset+j]);
 		Max = magsrc.pData[offset];
 		if(Max!=0)
 		{
@@ -165,7 +165,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 				r0.m = _mm_add_ps(r0.m, r1.m);
 				src++;
 			}
-			float mag = sqrt(r0.m128_f32[0] + r0.m128_f32[1] + r0.m128_f32[2] + r0.m128_f32[3]);
+			float mag = std::sqrt(r0.m128_f32[0] + r0.m128_f32[1] + r0.m128_f32[2] + r0.m128_f32[3]);
 			//
 			hu_m128 _vmag;
 			_vmag.m= _mm_set_ps1(mag);
@@ -183,7 +183,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 				src++;
 			}
 #else
-			float mag = sqrt(sift_cell.norm2());
+			float mag = std::sqrt(sift_cell.norm2());
 			int offset = (i*sift_width + j)*siftdim;
 			//memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 			for (int k = 0; k < siftdim; k++)
@@ -226,7 +226,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 	{
 		int offset = i*nchannels;
 		for(int j = 0;j<nchannels;j++)
-			magsrc.pData[offset+j] = sqrt(imdx.pData[offset+j]*imdx.pData[offset+j]+imdy.pData[offset+j]*imdy.pData[offset+j]);
+			magsrc.pData[offset+j] = std::sqrt(imdx.pData[offset+j]*imdx.pData[offset+j]+imdy.pData[offset+j]*imdy.pData[offset+j]);
 		Max = magsrc.pData[offset];
 		if(Max!=0)
 		{
@@ -328,7 +328,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, const std::vec
 						count++;
 					}
 				// normalize the SIFT descriptor
-				float mag = sqrt(sift_cell.norm2());
+				float mag = std::sqrt(sift_cell.norm2());
 				int offset = (i*sift_width+j)*siftdim*nScales+h*siftdim;
 				//memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 				for(int k = 0;k<siftdim;k++)

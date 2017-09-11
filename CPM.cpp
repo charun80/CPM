@@ -194,7 +194,7 @@ void CPM::CrossCheck(IntImage& seeds, FImage& seedsFlow, FImage& seedsFlow2, Int
 		int y2 = y + v;
 		if (x < b || x >= w - b || y < b || y >= h - b
 			|| x2 < b || x2 >= w - b || y2 < b || y2 >= h - b
-			|| sqrt(u*u + v*v)>m_Param.m_maxDisplacement_i){
+			|| std::sqrt(u*u + v*v)>m_Param.m_maxDisplacement_i){
 			valid[i] = 0;
 			continue;
 		}
@@ -202,7 +202,7 @@ void CPM::CrossCheck(IntImage& seeds, FImage& seedsFlow, FImage& seedsFlow2, Int
 		int idx2 = kLabel2[y2*w + x2];
 		float u2 = seedsFlow2[2 * idx2];
 		float v2 = seedsFlow2[2 * idx2 + 1];
-		float diff = sqrt((u + u2)*(u + u2) + (v + v2)*(v + v2));
+		float diff = std::sqrt((u + u2)*(u + u2) + (v + v2)*(v + v2));
 		if (diff > th){
 			valid[i] = 0;
 		}
@@ -508,7 +508,7 @@ void CPM::UpdateSearchRadius(IntImage& neighbors, FImage* pydSeedsFlow, int leve
 
 double CPM::dist(Point a, Point b)
 {
-	return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+	return std::sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
 // intersection between two lines
