@@ -111,7 +111,7 @@ inline T1 ImageProcessing::BilinearInterpolate(const T1* pImage,int width,int he
 
 
 //--------------------------------------------------------------------------------------------------
-// function to interplate multi-channel image plane for (x,y)
+// function to interpolate multi-channel image plane for (x,y)
 // --------------------------------------------------------------------------------------------------
 template <class T1,class T2>
 inline void ImageProcessing::BilinearInterpolate_transpose(const T1* pInput,int width,int height,int nChannels,float x,float y,T2* pDstImage)
@@ -136,7 +136,7 @@ inline void ImageProcessing::BilinearInterpolate_transpose(const T1* pInput,int 
 }
 
 //------------------------------------------------------------------------------------------------------------
-// this is the most general function for reszing an image with a varying nChannels
+// this is the most general function for resizing an image with a varying nChannels
 // bilinear interpolation is used for now. It might be replaced by other (bicubic) interpolation methods
 //------------------------------------------------------------------------------------------------------------
 template <class T1,class T2>
@@ -168,7 +168,7 @@ void ImageProcessing::ResizeImage(const T1* pSrcImage, T2* pDstImage, int SrcWid
 				y = (float)(i + 1) / Ratio - 1;
 				ix = EnforceRange(x + 0.5, SrcWidth);
 				iy = EnforceRange(y + 0.5, SrcHeight);
-				// neareast neighbor interpolation
+				// nearest neighbor interpolation
 				for (int c = 0; c < nChannels; c++){
 					pDstImage[(i*DstWidth + j)*nChannels + c] = pSrcImage[(iy*SrcWidth + ix)*nChannels + c];
 				}
@@ -181,7 +181,7 @@ void ImageProcessing::ResizeImage(const T1 *pSrcImage, T2 *pDstImage, int SrcWid
 {
 	float xRatio=(float)DstWidth/SrcWidth;
 	float yRatio=(float)DstHeight/SrcHeight;
-	std::memset(pDstImage,0, sizeof(T2)*DstWidth*DstHeight*nChannels);
+	std::memset(pDstImage, 0, sizeof(T2)*DstWidth*DstHeight*nChannels);
 
 	float x,y;
 
@@ -205,7 +205,7 @@ void ImageProcessing::ResizeImage(const T1 *pSrcImage, T2 *pDstImage, int SrcWid
 				ix = EnforceRange(x + 0.5, SrcWidth);
 				iy = EnforceRange(y + 0.5, SrcHeight);
 
-				// neareast neighbor interpolation
+				// nearest neighbor interpolation
 				for (int c = 0; c < nChannels; c++){
 					pDstImage[(i*DstWidth + j)*nChannels + c] = pSrcImage[(iy*SrcWidth + ix)*nChannels + c];
 				}
@@ -425,7 +425,7 @@ void ImageProcessing::filtering(const T1* pSrcImage,T2* pDstImage,int width,int 
 			for(k=0;k<nChannels;k++)
 				pDstImage[offset+k]=pBuffer[k];
 		}
-	delete pBuffer;
+	delete []pBuffer;
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -550,7 +550,7 @@ void ImageProcessing::BoxFilter(const T1* pSrcImage, T2* pDstImage, int width, i
 			}
 		}
 	}
-	delete pBuffer;
+	delete []pBuffer;
 }
 
 //------------------------------------------------------------------------------------------------------------
