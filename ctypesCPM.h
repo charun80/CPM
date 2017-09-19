@@ -24,6 +24,6 @@ DLL_PUBLIC sFlowResult cpmFlowFromBGR(
     const int f_nRows_i, const int f_nCols_i, const int f_nChannels,
     const int f_nSteps );
 
-}
+} // extern C
 
 #endif // PYCPM_H_INCLUDED
