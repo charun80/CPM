@@ -7,9 +7,10 @@ Created on Sat Sep  9 22:32:29 2017
 
 __all__ = ["writeMatches", "computeCPMFlow", "readMatches" ]
 
+import os
 
 __CPMLibName = 'libctypesCPM.so'
-__CPMLibPath = '.'
+__CPMLibPath = os.path.dirname( os.path.abspath(__file__) )
 
 __cCPMCall = None
 
