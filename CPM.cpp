@@ -44,8 +44,6 @@ CPM::~CPM()
 
 int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 {
-	CTimer t;
-
 	int w = img1.width();
 	int h = img1.height();
 
@@ -65,8 +63,7 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 		ImageFeature::imSIFT(_pyd1[i], _im1f[i], 2, 1, true, 8);
 		ImageFeature::imSIFT(_pyd2[i], _im2f[i], 2, 1, true, 8);
 	}
-	t.toc("get feature: ");
-
+	
 	int step = m_Param.m_Step_i;
 	int gridw = w / step;
 	int gridh = h / step;
@@ -125,15 +122,10 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 	}
 	_kLabels2.copy(_kLabels);
 	//kLabels.imshow("kLabels", 0);
-
-	//t.toc("generate seeds: ");
-
-	t.tic();
+    
 	OnePass(_pyd1, _pyd2, _im1f, _im2f, _seeds, _neighbors, _pydSeedsFlow);
-	t.toc("forward matching: ");
 	OnePass(_pyd2, _pyd1, _im2f, _im1f, _seeds2, _neighbors2, _pydSeedsFlow2);
-	t.toc("backward matching: ");
-
+    
 	// cross check
 	int* validFlag = new int[numV];
 	CrossCheck(_seeds, _pydSeedsFlow[0], _pydSeedsFlow2[0], _kLabels2, validFlag, m_Param.m_checkThreshold_i);
