@@ -4,6 +4,7 @@
 #include "Image.h"
 #include <typeinfo>
 #include <cstring>
+#include "Memory.h"
 
 
 
@@ -1749,12 +1750,12 @@ float Image<T>::norm2() const
 }
 
 template <class T>
-void Image<T>::threshold(float minV/* = FLT_MIN*/, float maxV/* = FLT_MAX*/)
+void Image<T>::threshold(float minV/* = std::numeric_limits<float>::min()*/, float maxV/* = std::numeric_limits<float>::max()*/)
 {
-	if (minV == FLT_MIN){
+	if (minV == std::numeric_limits<float>::min()){
 		minV = 0;
 	}
-	if (maxV == FLT_MAX){
+	if (maxV == std::numeric_limits<float>::max()){
 		if (IsFloat())
 			maxV = 1;
 		else

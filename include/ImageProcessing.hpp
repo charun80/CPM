@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cmath>
 #include <typeinfo>
+#include "Memory.h"
 
 
 namespace cpm

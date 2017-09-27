@@ -5,6 +5,7 @@
 #include "Memory.h"
 #include "Util.h"
 #include <typeinfo>
+#include "Memory.h"
 
 namespace cpm
 {
