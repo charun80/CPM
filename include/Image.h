@@ -5,6 +5,8 @@
 #include "ImageProcessing.h"
 #include "Vector.h"
 #include "Stochastic.h"
+#include "Util.h"
+#include <limits>
 
 #ifndef _MATLAB
 	#include "ImageIO.h"
@@ -327,7 +329,7 @@ public:
 	void normalize(float minV = -1, float maxV = -1);
 
 	// function to threshold an image
-	void threshold(float minV = FLT_MIN, float maxV = FLT_MAX);
+	void threshold(float minV = std::numeric_limits<float>::min(), float maxV = std::numeric_limits<float>::max());
 
 	// function to compute the statistics of the image
 	float norm2() const;
