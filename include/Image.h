@@ -3,7 +3,8 @@
 #include "project.h"
 #include <stdio.h>
 #include <string.h>
-#include <memory.h>
+#include "Memory.h"
+#include <cfloat>
 #include "ImageProcessing.h"
 #include <iostream>
 #include <fstream>
