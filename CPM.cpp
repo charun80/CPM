@@ -8,24 +8,19 @@
 #define UNKNOWN_FLOW 1e10
 
 CPM::CPM()
-{
-	// default parameters
-	_step = 3;
-	_isStereo = false;
+    : _im1f(NULL)
+	, _im2f(NULL)
+	, _pydSeedsFlow(NULL)
+	, _pydSeedsFlow2(NULL)
+{}
 
-	_maxIters = 8;
-	_stopIterRatio = 0.05;
-	_pydRatio = 0.5;
-
-	_maxDisplacement = 400;
-	_checkThreshold = 3;
-	_borderWidth = 5;
-
-	_im1f = NULL;
-	_im2f = NULL;
-	_pydSeedsFlow = NULL;
-	_pydSeedsFlow2 = NULL;
-}
+CPM::CPM( const sCPMParameters &f_Param )
+    : m_Param(f_Param)
+    , _im1f(NULL)
+	, _im2f(NULL)
+	, _pydSeedsFlow(NULL)
+	, _pydSeedsFlow2(NULL)
+{}
 
 CPM::~CPM()
 {
@@ -39,15 +34,8 @@ CPM::~CPM()
 		delete[] _pydSeedsFlow2;
 }
 
-void CPM::SetStereoFlag(int needStereo)
-{
-	_isStereo = needStereo;
-}
 
-void CPM::SetStep(int step)
-{
-	_step = step;
-}
+
 
 int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 {
@@ -56,8 +44,8 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 	int w = img1.width();
 	int h = img1.height();
 
-	_pyd1.ConstructPyramid(img1, _pydRatio, 30);
-	_pyd2.ConstructPyramid(img2, _pydRatio, 30);
+	_pyd1.ConstructPyramid(img1, m_Param.m_pydRatio_f, 30);
+	_pyd2.ConstructPyramid(img2, m_Param.m_pydRatio_f, 30);
 
 	int nLevels = _pyd1.nlevels();
 
@@ -74,7 +62,7 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 	}
 	t.toc("get feature: ");
 
-	int step = _step;
+	int step = m_Param.m_Step_i;
 	int gridw = w / step;
 	int gridh = h / step;
 	int xoffset = (w - (gridw - 1)*step) / 2;
@@ -143,7 +131,7 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 
 	// cross check
 	int* validFlag = new int[numV];
-	CrossCheck(_seeds, _pydSeedsFlow[0], _pydSeedsFlow2[0], _kLabels2, validFlag, _checkThreshold);
+	CrossCheck(_seeds, _pydSeedsFlow[0], _pydSeedsFlow2[0], _kLabels2, validFlag, m_Param.m_checkThreshold_i);
 	seedsFlow.copyData(_pydSeedsFlow[0]);
 	for (int i = 0; i < numV; i++){
 		if (!validFlag[i]){
@@ -164,7 +152,7 @@ int CPM::Matching(FImage& img1, FImage& img2, FImage& outMatches)
 		float v = seedsFlow[2 * i + 1];
 		float x2 = x + u;
 		float y2 = y + v;
-		if (std::abs(u) < UNKNOWN_FLOW && std::abs(v) < UNKNOWN_FLOW){
+		if ((std::abs(u) < UNKNOWN_FLOW) && (std::abs(v) < UNKNOWN_FLOW)){
 			tmpMatch[4 * i + 0] = x;
 			tmpMatch[4 * i + 1] = y;
 			tmpMatch[4 * i + 2] = x2;
@@ -196,7 +184,7 @@ void CPM::CrossCheck(IntImage& seeds, FImage& seedsFlow, FImage& seedsFlow2, Int
 	}
 
 	// cross check (1st step)
-	int b = _borderWidth;
+	int b = m_Param.m_borderWidth_i;
 	for (int i = 0; i < numV; i++){
 		float u = seedsFlow[2 * i];
 		float v = seedsFlow[2 * i + 1];
@@ -206,7 +194,7 @@ void CPM::CrossCheck(IntImage& seeds, FImage& seedsFlow, FImage& seedsFlow2, Int
 		int y2 = y + v;
 		if (x < b || x >= w - b || y < b || y >= h - b
 			|| x2 < b || x2 >= w - b || y2 < b || y2 >= h - b
-			|| sqrt(u*u + v*v)>_maxDisplacement){
+			|| sqrt(u*u + v*v)>m_Param.m_maxDisplacement_i){
 			valid[i] = 0;
 			continue;
 		}
@@ -303,7 +291,7 @@ int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCI
 
 	int iter = 0;
 	float lastUpdateRatio = 2;
-	for (iter = 0; iter < _maxIters; iter++)
+	for (iter = 0; iter < m_Param.m_maxIters_i; iter++)
 	{
 		int updateCount = 0;
 
@@ -353,7 +341,7 @@ int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCI
 				float tu = seedsFlow->pData[2 * idx] + rand() % (2 * mag + 1) - mag;
 
 				float tv = 0;
-				if (!_isStereo){
+				if (!m_Param.m_IsStereo_b){
 					tv = seedsFlow->pData[2 * idx + 1] + rand() % (2 * mag + 1) - mag;
 				}
 
@@ -382,7 +370,7 @@ int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCI
 
 		float updateRatio = float(updateCount) / ptNum;
 		//printf("Update ratio: %f\n", updateRatio);
-		if (updateRatio < _stopIterRatio || lastUpdateRatio - updateRatio < 0.01){
+		if (updateRatio < m_Param.m_StopIterRatio_f || lastUpdateRatio - updateRatio < 0.01){
 			iter++;
 			break;
 		}
@@ -411,10 +399,10 @@ void CPM::PyramidRandomSearch(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage*
 	float* searchRadius = new float[numV];
 
 	// random Initialization on coarsest level
-	int initR = _maxDisplacement * pow(ratio, nLevels - 1) + 0.5;
+	int initR = m_Param.m_maxDisplacement_i* pow(ratio, nLevels - 1) + 0.5;
 	for (int i = 0; i < numV; i++){
 		pydSeedsFlow[nLevels - 1][2 * i] = rand() % (2 * initR + 1) - initR;
-		if (_isStereo){
+		if (m_Param.m_IsStereo_b){
 			pydSeedsFlow[nLevels - 1][2 * i + 1] = 0;
 		}else{
 			pydSeedsFlow[nLevels - 1][2 * i + 1] = rand() % (2 * initR + 1) - initR;
@@ -428,7 +416,7 @@ void CPM::PyramidRandomSearch(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage*
 
 	int* iterCnts = new int[nLevels];
 	for (int i = 0; i < nLevels; i++){
-		iterCnts[i] = _maxIters;
+		iterCnts[i] = m_Param.m_maxIters_i;
 	}
 
 	for (int l = nLevels - 1; l >= 0; l--){ // coarse-to-fine
@@ -438,10 +426,10 @@ void CPM::PyramidRandomSearch(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage*
 			UpdateSearchRadius(neighbors, pydSeedsFlow, l, searchRadius);
 
 			// scale the radius accordingly
-			int maxR = _maxDisplacement * std::pow(ratio, l) + 0.5;
+			int maxR = m_Param.m_maxDisplacement_i* std::pow(ratio, l) + 0.5;
 			for (int i = 0; i < numV; i++){
 				searchRadius[i] = std::max(std::min(searchRadius[i], float(maxR)), 1.f);
-				searchRadius[i] *= (1. / _pydRatio);
+				searchRadius[i] *= (1. / m_Param.m_pydRatio_f);
 			}
 
 			pydSeedsFlow[l - 1].copyData(pydSeedsFlow[l]);
@@ -478,7 +466,7 @@ void CPM::OnePass(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* im1f, UCIma
 	PyramidRandomSearch(pyd1, pyd2, im1f, im2f, pydSeeds, neighbors, pydSeedsFlow);
 
 	// scale
-	// int b = _borderWidth;  WARN: unused variable
+	// int b = m_Param.m_borderWidth_i;  WARN: unused variable
 	for (int i = 0; i < nLevels; i++){
 		pydSeedsFlow[i].Multiplywith(pow(1. / ratio, i));
 	}

@@ -43,8 +43,10 @@ int main(int argc, char** argv)
 	CTimer totalT;
 	FImage matches;
 
-	CPM cpm;
-	cpm.SetStep(step);
+    sCPMParameters l_CPMParam;
+    l_CPMParam.m_Step_i = step;
+
+	CPM cpm(l_CPMParam);
 	cpm.Matching(img1, img2, matches);
 
 	totalT.toc("total time: ");
