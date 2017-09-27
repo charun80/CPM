@@ -222,7 +222,7 @@ float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, i
 	int w = im1f->width();
 	int h = im1f->height();
 	int ch = im1f->nchannels();
-	float totalDiff;
+	unsigned int totalDiff = 0;
 
 	// fast
 	x1 = ImageProcessing::EnforceRange(x1, w);
@@ -230,32 +230,33 @@ float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, i
 	y1 = ImageProcessing::EnforceRange(y1, h);
 	y2 = ImageProcessing::EnforceRange(y2, h);
 
-	unsigned char* p1 = im1f->pixPtr(y1, x1);
-	unsigned char* p2 = im2f->pixPtr(y2, x2);
+	const unsigned char* p1 = im1f->pixPtr(y1, x1);
+	const unsigned char* p2 = im2f->pixPtr(y2, x2);
 
-	totalDiff = 0;
-
-#ifdef WITH_SSE
+#ifdef USE_SIMD
 	// SSE2
-	unsigned char *_p1 = p1, *_p2 = p2;
-	hu_m128 r1, r2, r3;
-	int iterCnt = ch / 16;
-	int idx = 0;
-	int sum0 = 0;
-	int sum1 = 0;
-	for (idx = 0; idx < iterCnt; idx++){
-		std::memcpy(&r1, _p1, sizeof(hu_m128));
-		std::memcpy(&r2, _p2, sizeof(hu_m128));
-		_p1 += sizeof(hu_m128);
-		_p2 += sizeof(hu_m128);
-		r3.mi = _mm_sad_epu8(r1.mi, r2.mi);
-		sum0 += r3.m128i_u16[0];
-		sum1 += r3.m128i_u16[4];
+	const unsigned char *_p1 = p1, *_p2 = p2;
+	
+    simdqi_t r1, r2;
+	
+    int iterCnt = ch / NSimdChars;
+	int idx = 0
+    
+	for ( idx = 0; idx < iterCnt; idx++)
+    {
+		// TODO: align memory so that copy is not required
+        std::memcpy(&r1, _p1, NSimdBytes);
+		std::memcpy(&r2, _p2, NSimdBytes);
+		
+        totalDiff += simdqi_sumAbsDiff( r1, r2 );
+        
+        _p1 += NSimdChars;
+		_p2 += NSimdChars;
 	}
-	totalDiff += sum0;
-	totalDiff += sum1;
-	// add the left
-	for (idx *= 16; idx < ch; idx++){
+    
+    
+	// add what is left
+	for (idx *= NSimdChars; idx < ch; idx++){
 		totalDiff += std::abs(p1[idx] - p2[idx]);
 	}
 #else
@@ -265,7 +266,7 @@ float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, i
 	}
 #endif
 
-	return totalDiff;
+	return float(totalDiff);
 }
 
 int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCImage* pyd2f, int level, float* radius, int iterCnt, IntImage* pydSeeds, IntImage& neighbors, FImage* pydSeedsFlow, float* bestCosts)
