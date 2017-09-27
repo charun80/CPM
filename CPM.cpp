@@ -7,6 +7,11 @@
 
 #define UNKNOWN_FLOW 1e10
 
+
+namespace cpm
+{
+
+
 CPM::CPM()
     : _im1f(NULL)
 	, _im2f(NULL)
@@ -593,3 +598,6 @@ float CPM::MinimalCircle(float* x, float*y, int n, float* centerX, float* center
 	return r;
 }
 
+
+
+} //namespace cpm

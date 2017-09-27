@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _IMAGE_H
+#define _IMAGE_H
 
 #include "project.h"
 #include <cstdio>
@@ -17,6 +18,9 @@
 #else
 	#include "mex.h"
 #endif
+
+namespace cpm
+{
 
 //using namespace std;
 
@@ -3167,5 +3171,9 @@ void Image<T>::OutputToMatlab(mxArray *&matrix) const
 }
 
 #endif
+
+}  // namespace cpm
+
+#endif // _IMAGE_H
 
 

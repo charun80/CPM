@@ -8,6 +8,9 @@
 
 #include "Memory.h"
 
+namespace cpm
+{
+
 
 class ImageIO
 {
@@ -416,4 +419,9 @@ unsigned char ImageIO::convertPixel(const T& value,bool IsFloat,ImageType type,T
 	return 0;
 }
 //*/
+
+
+}  // namespace cpm
+
+
 #endif

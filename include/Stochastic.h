@@ -14,6 +14,11 @@
 #define PI 3.1415927
 #endif
 
+
+namespace cpm
+{
+
+
 enum SortType{SortAscending,SortDescending};
 
 class CStochastic
@@ -404,5 +409,7 @@ void CStochastic::GaussianFiltering(T1* pSrcArray,T2* pDstArray,int NumPoints,in
 		}
 	delete pGaussian;
 }
+
+}  // namespace cpm
 
 #endif

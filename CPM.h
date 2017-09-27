@@ -29,6 +29,10 @@ corresponding to one match per line.
 #include "ImagePyramid.h"
 
 
+namespace cpm
+{
+
+
 struct sCPMParameters
 {
 	int m_Step_i;
@@ -113,5 +117,7 @@ private:
 	IntImage _neighbors2;
 
 };
+
+} //namespace cpm
 
 #endif // _CPM_H_

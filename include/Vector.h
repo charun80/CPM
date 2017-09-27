@@ -1,9 +1,15 @@
-#pragma once
+#ifndef _VECTOR_H_
+#define _VECTOR_H_
+
+//#pragma once
 
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include "project.h"
+
+namespace cpm
+{
 
 //using namespace std;
 
@@ -49,7 +55,7 @@ public:
 	//		result.pData[i] = pData[i]/val;
 	//	return result;
 	//}
-	
+
 	Vector<T>& operator+=(const Vector<T>& vect);
 	Vector<T>& operator*=(const Vector<T>& vect);
 	Vector<T>& operator-=(const Vector<T>& vect);
@@ -59,7 +65,7 @@ public:
 	Vector<T>& operator*=(double val);
 	Vector<T>& operator-=(double val);
 	Vector<T>& operator/=(double val);
-	
+
 	//friend const Vector<T> operator+(const Vector<T>& vect1,const Vector<T>& vect2);
 	//friend const Vector<T> operator*(const Vector<T>& vect1,const Vector<T>& vect2);
 	//friend const Vector<T> operator-(const Vector<T>& vect1,const Vector<T>& vect2);
@@ -69,7 +75,7 @@ public:
 	//friend const Vector<T> operator*(const Vector<T>& vect1,double val);
 	//friend const Vector<T> operator-(const Vector<T>& vect1,double val);
 	//friend Vector<T> operator/(const Vector<T>& vect,double val);
-	
+
 	friend double innerproduct(const Vector<T>& vect1,const Vector<T>& vect2)
 	{
 		double result = 0;
@@ -457,6 +463,11 @@ void Vector<T>::writeVector(mxArray*& plhs) const
 	for(int i =0;i<nDim;i++)
 		ptr[i] = pData[i];
 }
+
 #endif
 
-//*/
+}  // namespace cpm
+
+#endif // _VECTOR_H_
+
+
