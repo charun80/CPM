@@ -2,6 +2,8 @@
 #include <cassert>
 #include <cmath>
 #include "ImageFeature.h"
+#include "Util.h"
+
 
 // [4/6/2017 Yinlin.Hu]
 

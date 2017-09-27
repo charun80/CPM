@@ -27,6 +27,7 @@ corresponding to one match per line.
 #define _CPM_H_
 
 #include "ImagePyramid.h"
+#include "Image.h"
 
 
 namespace cpm
