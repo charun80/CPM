@@ -33,6 +33,7 @@ corresponding to one match per line.
 #endif
 
 #include "ImagePyramid.h"
+#include "Image.h"
 
 
 namespace cpm
