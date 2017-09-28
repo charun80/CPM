@@ -55,7 +55,7 @@ template <class T>
 void Vector<T>::releaseData()
 {
 	if(pData!=NULL)
-		delete pData;
+		delete []pData;
 	pData=NULL;
 	nDim=0;
 }
@@ -89,7 +89,7 @@ template <class T>
 void Vector<T>::dimcheck(const Vector &vect) const
 {
 	if(nDim!=vect.nDim)
-		std::cerr<<"The dimensions of the std::vectors don't match!"<<std::endl;
+		std::cerr<<"The dimensions of the vectors don't match!"<<std::endl;
 }
 
 template <class T>
@@ -358,7 +358,6 @@ void Vector<T>::writeVector(mxArray*& plhs) const
 	for(int i =0;i<nDim;i++)
 		ptr[i] = pData[i];
 }
-
 #endif
 
 }  // namespace cpm

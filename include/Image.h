@@ -202,7 +202,7 @@ public:
 
 	void MedianFiltering(int fsize = 2);
 
-	// funciton for filtering
+	// function for filtering
 	template <class T1>
 	void imfilter(Image<T1>& image,const float* filter,int fsize) const;
 
@@ -224,7 +224,7 @@ public:
 	template<class T1>
 	void imfilter_hv(Image<T1>& image,const Image<float>& hfilter,const Image<float>& vfilter) const;
 
-	// funciton for filtering transpose
+	// function for filtering transpose
 	template <class T1>
 	void imfilter_transpose(Image<T1>& image,const float* filter,int fsize) const;
 
@@ -312,7 +312,7 @@ public:
 	void Add(const T value);
 
 	template <class T1>
-	void Add(const Image<T1>& image1,const float value);
+	void Add(const Image<T1>& image1,const float ratio);
 
 	template <class T1>
 	void Add(const Image<T1>& image1);
@@ -322,7 +322,7 @@ public:
 
 	void Subtract(const T value);
 
-	// arestmetic operators
+	// arithmetic operators
 	void square();
 
 	// exp
@@ -345,18 +345,18 @@ public:
 	float innerproduct(Image<T1>& image) const;
 
 	template <class T1>
-	void Integral(Image<T1>& image);
+	void Integral(Image<T1>& image) const;
 
 	template <class T1>
-	void BoxFilter(Image<T1>& image, int r, bool norm = true);
+	void BoxFilter(Image<T1>& image, int r, bool norm = true) const;
 
 	// function to bilateral smooth flow field
 	template <class T1>
-	void BilateralFiltering(Image<T1>& other,int fsize,float filter_signa,float range_sigma);
+	void BilateralFiltering(Image<T1>& other,int fsize,float filter_signa,float range_sigma) const;
 
 	// function to bilateral smooth an image
 	//Image<T> BilateralFiltering(int fsize,float filter_sigma,float range_sigma);
-	void imBilateralFiltering(Image<T>& result,int fsize,float filter_sigma,float range_sigma);
+	void imBilateralFiltering(Image<T>& result,int fsize,float filter_sigma,float range_sigma) const;
 
 	template <class T1,class T2>
 	int kmeansIndex(int pixelIndex,T1& minDistance,const T2* pDictionary,int nVocabulary, int nDim);
