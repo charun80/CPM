@@ -2,7 +2,7 @@ CCPP = g++
 
 SSE_FLAG = -msse2 -DWITH_SSE
 
-CFLAGS = -O2 -Wall -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -march=native $(SSE_FLAG) -Iinclude
+CFLAGS = -O2 -march=native -Wall -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -march=native $(SSE_FLAG) -Iinclude
 #CFLAGS = -w -ggdb3  -Iinclude
 LDFLAGS = -lopencv_core -lopencv_highgui
 
