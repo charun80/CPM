@@ -3,4 +3,6 @@
 *.pyc
 *.pyo
 CPM
+*.pdf
+*.cPickle
 
