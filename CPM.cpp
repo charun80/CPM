@@ -240,9 +240,9 @@ float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, i
     simdqi_t r1, r2;
 	
     int iterCnt = ch / NSimdChars;
-	int idx = 0
+	int idx = 0;
     
-	for ( idx = 0; idx < iterCnt; idx++)
+	for ( ; idx < iterCnt; idx++)
     {
 		// TODO: align memory so that copy is not required
         std::memcpy(&r1, _p1, NSimdBytes);

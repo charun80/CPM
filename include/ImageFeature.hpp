@@ -1,7 +1,9 @@
 #ifndef _IMAGEFEATURES_HPP
 #define _IMAGEFEATURES_HPP
 
+#include "simd.h"
 #include "ImageFeature.h"
+
 
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433
@@ -176,7 +178,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 			int offset = (i*sift_width + j)*siftdim;
 			//std::memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 			for (int k = 0; k < siftdim; k++)
-				imsift.pData[offset + k] = (unsigned char)std::min(sift_cell.pData[k] / (mag + 0.01) * 255, 255);//(unsigned char) std::min(sift_cell.pData[k]/mag*512,255);
+				imsift.pData[offset + k] = (unsigned char) std::min(sift_cell.pData[k] / (mag + 0.01f) * 255.f, 255.f );//(unsigned char) std::min(sift_cell.pData[k]/mag*512,255);
 #endif
 		}//*/
 	}

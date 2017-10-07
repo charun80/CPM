@@ -1,0 +1,8 @@
+*.o
+*.so
+*.pyc
+*.pyo
+CPM
+*.pdf
+*.cPickle
+

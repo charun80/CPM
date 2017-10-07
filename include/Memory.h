@@ -1,13 +1,11 @@
 #ifndef _MEMORY_h
 #define _MEMORY_h
 
+#include "simd.h"
 #include <memory.h>
 #include <malloc.h>
 
 
-#ifdef USE_SIMD
-#include <xmmintrin.h>
-#endif
 
 namespace cpm
 {
