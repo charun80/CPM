@@ -1,13 +1,13 @@
 #ifndef _MEMORY_h
 #define _MEMORY_h
 
+#include "simd.h"
 #include <memory.h>
 #include <malloc.h>
 
 
-#ifdef WITH_SSE
-#include <xmmintrin.h>
-#endif
+
+
 
 namespace cpm
 {

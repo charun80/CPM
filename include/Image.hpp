@@ -1,6 +1,7 @@
 #ifndef _IMAGE_HPP
 #define _IMAGE_HPP
 
+#include "simd.h"
 #include "Image.h"
 #include <typeinfo>
 #include <cstring>
