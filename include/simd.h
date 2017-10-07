@@ -56,11 +56,20 @@
     static const size_t NSimdChars  = NSIMDBYTES / sizeof(char);
     
     #undef NSIMDBYTES
-
-    inline static simdsf_t* simdsf_ptrcast( void* fptr ) 
+    
+    
+    inline static bool isAligned( const void *fptr )
     {
-        return ((simdsf_t*) fptr);
+        size_t ptr_i = size_t(fptr);
+        return (0 == (ptr_i % NSimdBytes));
     }
+    
+    
+    inline static simdqi_t* simdqi_ptrcast( unsigned char* fptr ) {  return reinterpret_cast<simdqi_t*>( fptr ); }
+    inline static const simdqi_t* simdqi_ptrcast( const unsigned char* fptr ) {  return reinterpret_cast<const simdqi_t*>( fptr ); }
+    
+    inline static simdsf_t* simdsf_ptrcast( float* fptr ) { return reinterpret_cast<simdsf_t*>( fptr ); }
+    inline static const simdsf_t* simdsf_ptrcast( const float* fptr ) { return reinterpret_cast<const simdsf_t*>( fptr ); }
 
 
     inline static void* __xmalloc( size_t fSize, const std::string &fErrpos )

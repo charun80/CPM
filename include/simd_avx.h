@@ -9,8 +9,19 @@ typedef __v8sf   simdsf_t;
 typedef __v16hi  simdhi_t;
 typedef __v32qi  simdqi_t;
 
+
+inline static simdsf_t simdsf_init( float x );
+
 #define simdsf_sqrt(x)   __builtin_ia32_sqrtps256(x)
 #define simdsf_max(x,y)  __builtin_ia32_maxps256(x,y)
+
+inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y );
+
+
+
+
+// Implementation
+
 
 inline static simdsf_t simdsf_init( float x ) 
 { 
@@ -43,7 +54,7 @@ inline static simdsf_t simdsf_init( float x )
 #else
     // AVX2 available
     
-    inline static unsigned int simdqi_sumAbsDiff( simdqi_t x, simdqi_t y )
+    inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y )
     {
         typedef unsigned int uint;
         __v8hi z;
