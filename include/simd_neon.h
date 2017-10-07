@@ -10,13 +10,13 @@
 
 
 
-typedef float32x4  simdsf_t;
-typedef uint8x16_t simdqi_t;
+typedef float32x4_t  simdsf_t;
+typedef uint8x16_t   simdqi_t;
 
 
 inline static simdsf_t simdsf_init( float x );
-static inline simdsf_t simdsf_sqrt( simdsf_t x  );
-static inline simdsf_t simdsf_max( simdsf_t x, simdsf_t y );
+static inline simdsf_t simdsf_sqrt( const simdsf_t &x );
+static inline simdsf_t simdsf_max( const simdsf_t &x, const simdsf_t &y );
 
 inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y );
 
@@ -39,20 +39,20 @@ inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t 
     uint16x4_t z8low  = vget_low_u16( z8 );
     
     // 4 values left
-    uint32x4_t z4 = vmovl_u16( vadd_u16( z8high, z8low ) );
+    uint32x4_t z4 = vmovl_u16( z8high + z8low );
     
     uint32x2_t z4high = vget_high_u32( z4 );
     uint32x2_t z4low  = vget_low_u32( z4 );
     
     // 2 values left
-    uint32x2_t z2 = vadd_u32( z4high, z4low );
+    uint32x2_t z2 = z4high + z4low;
     
     return (z2[0] + z2[1]);
 }
 
 
 
-static inline simdsf_t simdsf_sqrt( simdsf_t x  )
+static inline simdsf_t simdsf_sqrt( const simdsf_t &x )
 {
     return (1.f / vrsqrteq_f32(x));
 }
@@ -65,7 +65,7 @@ static inline simdsf_t simdsf_max( const simdsf_t &x, const simdsf_t &y )
     #define SIMDSF_MAX(a,b)  (((a)>(b)) ? (a) : (b))
     
     for (int i = 0; i < 4; ++i)
-        z[i] = MAX( x[i], y[i] );
+        z[i] = SIMDSF_MAX( x[i], y[i] );
     
     #undef SIMDSF_MAX
     

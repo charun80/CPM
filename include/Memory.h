@@ -6,7 +6,7 @@
 #include <malloc.h>
 
 
-
+/*
 namespace cpm
 {
 
@@ -24,5 +24,7 @@ typedef union _m128{
 #endif
 
 }  // namespace cpm
+
+*/
 
 #endif
