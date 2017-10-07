@@ -5,9 +5,12 @@ Created on Sat Sep  9 22:32:29 2017
 @author: Matthias Höffken
 """
 
+from __future__ import print_function
+import os
+
+
 __all__ = ["writeMatches", "computeCPMFlow", "readMatches" ]
 
-import os
 
 __CPMLibName = 'libctypesCPM.so'
 __CPMLibPath = os.path.dirname( os.path.abspath(__file__) )

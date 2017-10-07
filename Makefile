@@ -1,16 +1,15 @@
 CCPP = g++
 
-SSE_FLAG = -msse2 -DWITH_SSE
+OPTMIZATION_FLAGS = -O2 -march=native -DWITH_SSE
+WARNING_FLAGS = -Wall -Wdate-time -Wformat -Werror=format-security  # -Wextra
+DEBUGGING_FLAGS = #-ggdb3
 
-CFLAGS = -O2 -march=native -Wall -fno-strict-aliasing -Wdate-time -D_FORTIFY_SOURCE=2 -fstack-protector-strong -Wformat -Werror=format-security -fPIC -march=native $(SSE_FLAG) -Iinclude
-#CFLAGS = -w -ggdb3  -Iinclude
-LDFLAGS = -lopencv_core -lopencv_highgui
-
+CFLAGS = -fsigned-char -fno-strict-aliasing -D_FORTIFY_SOURCE=2 -fstack-protector-strong -fPIC $(OPTMIZATION_FLAGS) $(WARNING_FLAGS) $(DEBUGGING_FALGS) -Iinclude
 
 TARGET_LIB = libctypesCPM.so # target lib
 
 # linking flags
-#SHARED_LDFLAGS = -shared -Wl,-soname,$(TARGET_LIB) -Wl,--version-script=$(TARGET_LIB:%.so=%.version) 
+LDFLAGS = -lopencv_core -lopencv_highgui
 SHARED_LDFLAGS = -shared -Wl,-soname,$(TARGET_LIB)
 
 
