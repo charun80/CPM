@@ -1,6 +1,6 @@
 CCPP = g++
 
-OPTMIZATION_FLAGS = -O2 -march=native -DWITH_SSE
+OPTMIZATION_FLAGS = -O2 -march=native
 WARNING_FLAGS = -Wall -Wdate-time -Wformat -Werror=format-security  # -Wextra
 DEBUGGING_FLAGS = #-ggdb3
 
