@@ -8,11 +8,19 @@
 typedef __v4sf  simdsf_t;
 typedef __v16qi simdqi_t;
 
+
+inline static simdsf_t simdsf_init( float x );
+
 // Avaliable in SSE1
 #define simdsf_sqrt(x)   __builtin_ia32_sqrtps(x)
 #define simdsf_max(x,y)  __builtin_ia32_maxps(x,y)
 
-    
+inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y );
+
+
+
+// Implementation
+
 
 inline static simdsf_t simdsf_init( float x ) 
 { 
@@ -39,7 +47,7 @@ inline static simdsf_t simdsf_init( float x )
 #else
     // SSE2 available
     
-    inline static unsigned int simdqi_sumAbsDiff( simdqi_t x, simdqi_t y )
+    inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y )
     {
         __v2di z = __builtin_ia32_psadbw128( x, y );
         return (z[0] + z[1]);
