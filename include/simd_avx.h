@@ -2,6 +2,7 @@
 #define __SIMD_AVX_H_
 
 #include <immintrin.h>
+#include <stdint.h>
 
 
 // SIMD vector type
@@ -15,8 +16,7 @@ inline static simdsf_t simdsf_init( float x );
 #define simdsf_sqrt(x)   __builtin_ia32_sqrtps256(x)
 #define simdsf_max(x,y)  __builtin_ia32_maxps256(x,y)
 
-inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y );
-
+inline static uint32_t simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y );
 
 
 
@@ -32,10 +32,8 @@ inline static simdsf_t simdsf_init( float x )
 #ifndef __AVX2__
     // No AVX2 available
     
-    inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y )
-    {           
-        typedef unsigned int uint;
-        
+    inline static uint32_t simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y )
+    {
         const __v16qi *X2 = (__v16qi*)&x;
         const __v16qi *Y2 = (__v16qi*)&y;
         
@@ -45,38 +43,38 @@ inline static simdsf_t simdsf_init( float x )
             Z[0] = __builtin_ia32_psadbw128 ( X2[0], Y2[0] );
             Z[1] = __builtin_ia32_psadbw128 ( X2[1], Y2[1] );
             
-            __v2di z = Z[0] + Z[1];
+            z = Z[0] + Z[1];
         }
         
-        return ( uint(z[0]) + uint(z[1]) );
+        return ( z[0] + z[1] );
     }
+    
     
 #else
     // AVX2 available
     
-    inline static unsigned int simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y )
+    inline static uint32_t simdqi_sumAbsDiff( const simdqi_t &x, const simdqi_t &y )
     {
-        typedef unsigned int uint;
-        __v8hi z;
-        {
-            typedef union {
-                __v16hi vd;
-                __v8hi  vs[2];
-            } v16hi_2v8hi;
-            
-            v16hi_2v8hi Z;
-            Z.vd = __builtin_ia32_psadbw256( x, y );
-            
-            // using SSE here
-            z = Z.vs[0] + Z.vs[1];
-        }
+        // see: https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=sad&techs=AVX2&expand=4559
+         
+        union {
+            __v16hi vhi;
+            __v8hi  v2hi[2];
+        } z4;
         
-        uint zui = z[0];
-        for (int i = 1; i < 8; ++i)
-            zui += uint(z[i]);
+        z4.vhi = __builtin_ia32_psadbw256( x, y ); // only 4 values are used
         
-        return zui;
+        union {
+            __v8hi vhi;
+            __v4si vdi;
+        } z2;
+        // using SSE here -
+        z2.vhi = z4.v2hi[0] + z4.v2hi[1];
+        
+        // ... the low 32 bits of 64-bit elements
+        return (z2.vdi[0] + z2.vdi[2]);
     }
+
     
     
 #endif // __AVX2__

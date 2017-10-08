@@ -1,7 +1,7 @@
 CCPP = g++
 
 
-OPTMIZATION_FLAGS = -O2 -march=native -mtune=native
+OPTMIZATION_FLAGS = -O2 -march=native -mtune=native -ftree-vectorize # -msse2
 WARNING_FLAGS = -Wall -Wdate-time -Wformat -Werror=format-security  # -Wextra
 DEBUGGING_FLAGS = #-ggdb3
 
