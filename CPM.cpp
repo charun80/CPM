@@ -209,56 +209,58 @@ void CPM::CrossCheck(IntImage& seeds, FImage& seedsFlow, FImage& seedsFlow2, Int
 	}
 }
 
+
+template <typename T>
+static inline int absdiff( T x, T y )
+{
+    return std::abs( int(x) - int(y) );
+}
+
+
 float CPM::MatchCost(FImage& img1, FImage& img2, UCImage* im1f, UCImage* im2f, int x1, int y1, int x2, int y2)
 {
 	int w = im1f->width();
 	int h = im1f->height();
 	int ch = im1f->nchannels();
-	float totalDiff;
+	unsigned int totalDiff = 0;
 
 	// fast
 	x1 = ImageProcessing::EnforceRange(x1, w);
 	x2 = ImageProcessing::EnforceRange(x2, w);
 	y1 = ImageProcessing::EnforceRange(y1, h);
 	y2 = ImageProcessing::EnforceRange(y2, h);
+    
+    
+	const unsigned char* p1 = im1f->pixPtr(y1, x1);
+	const unsigned char* p2 = im2f->pixPtr(y2, x2);
+    
+    const unsigned char* const p1End = p1 + ch;
 
-	unsigned char* p1 = im1f->pixPtr(y1, x1);
-	unsigned char* p2 = im2f->pixPtr(y2, x2);
-
-	totalDiff = 0;
-
-#ifdef WITH_SSE
-	// SSE2
-	unsigned char *_p1 = p1, *_p2 = p2;
-	hu_m128 r1, r2, r3;
-	int iterCnt = ch / 16;
-	int idx = 0;
-	int sum0 = 0;
-	int sum1 = 0;
-	for (idx = 0; idx < iterCnt; idx++){
-		std::memcpy(&r1, _p1, sizeof(hu_m128));
-		std::memcpy(&r2, _p2, sizeof(hu_m128));
-		_p1 += sizeof(hu_m128);
-		_p2 += sizeof(hu_m128);
-		r3.mi = _mm_sad_epu8(r1.mi, r2.mi);
-		sum0 += r3.m128i_u16[0];
-		sum1 += r3.m128i_u16[4];
-	}
-	totalDiff += sum0;
-	totalDiff += sum1;
-	// add the left
-	for (idx *= 16; idx < ch; idx++){
-		totalDiff += std::abs(p1[idx] - p2[idx]);
-	}
-#else
-	totalDiff = 0;
-	for (int idx = 0; idx < ch; idx++){
-		totalDiff += std::abs(p1[idx] - p2[idx]);
-	}
+#ifdef USE_SIMD
+    
+    // process before alignemnt
+    for (; ((!isAligned(p1)) || (!isAligned(p2))) && (p1 != p1End); 
+           ++p1, ++p2 )
+        totalDiff += absdiff( *p1, *p2 );
+    
+    // process the part with alignment
+    {
+        const unsigned char* const p1SimdEnd = p1End - (NSimdChars - 1);
+    
+        for (; p1 < p1SimdEnd; p1 += NSimdChars, 
+                               p2 += NSimdChars )
+            totalDiff += simdqi_sumAbsDiff( *simdqi_ptrcast( p1 ), *simdqi_ptrcast( p2 ) );
+    }
 #endif
+    
+    // Either no SSE or processing part after alignment
+    for (; p1 != p1End; ++p1, ++p2 )
+        totalDiff += absdiff( *p1, *p2 );
 
-	return totalDiff;
+	return float(totalDiff);
 }
+
+
 
 int CPM::Propogate(FImagePyramid& pyd1, FImagePyramid& pyd2, UCImage* pyd1f, UCImage* pyd2f, int level, float* radius, int iterCnt, IntImage* pydSeeds, IntImage& neighbors, FImage* pydSeedsFlow, float* bestCosts)
 {

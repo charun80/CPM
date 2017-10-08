@@ -105,7 +105,7 @@ template <class T>
 Image<T>::~Image()
 {
 	if (pData != NULL){
-		xfree(pData);
+		free(pData);
 	}
 }
 
@@ -116,7 +116,7 @@ template <class T>
 void Image<T>::clear()
 {
 	if (pData != NULL){
-		xfree(pData);
+		free(pData);
 	}
 	pData=NULL;
 	imWidth=imHeight=nChannels=nPixels=nElements=0;
@@ -171,7 +171,7 @@ void Image<T>::copyData(const Image<T>& other)
 	{
 		nElements=other.nElements;	
 		if(pData!=NULL)
-			xfree(pData);
+			free(pData);
 		pData=NULL;
 		pData = (T*)xmalloc(nElements * sizeof(T));
 	}
@@ -308,7 +308,7 @@ bool Image<T>::imresize(float ratio, InterType type/* = INTER_LINEAR*/)
 
 	ImageProcessing::ResizeImage(pData,pDstData,imWidth,imHeight,nChannels,ratio,type);
 
-	xfree(pData);
+	free(pData);
 	pData=pDstData;
 	imWidth=DstWidth;
 	imHeight=DstHeight;
@@ -971,7 +971,7 @@ void Image<T>::imfilter_hv(Image<T1> &image, const float *hfilter, int hfsize, c
 	pTempBuffer = (T1*)xmalloc(nElements * sizeof(T1));
 	ImageProcessing::hfiltering(pData,pTempBuffer,imWidth,imHeight,nChannels,hfilter,hfsize);
 	ImageProcessing::vfiltering(pTempBuffer,image.data(),imWidth,imHeight,nChannels,vfilter,vfsize);
-	xfree(pTempBuffer);
+	free(pTempBuffer);
 }
 
 template <class T>
@@ -1367,7 +1367,7 @@ void Image<T>::Multiply(const Image<T1>& image1,const Image<T2>& image2,const Im
 	const T2*& pData2=image2.data();
 	const T3*& pData3=image3.data();
 
-#ifdef WITH_SSE
+#if 0 //#ifdef USE_SIMD
 	if (typeid(T) == typeid(float) && typeid(T1) == typeid(float)
 		&& typeid(T2) == typeid(float) && typeid(T3) == typeid(float)){
 		__m128 *p0 = (__m128*)pData, *p1 = (__m128*)pData1, 
@@ -1458,7 +1458,7 @@ void Image<T>::MultiplywithAcross(const Image<T1> &image1)
 template <class T>
 void Image<T>::Multiplywith(float value)
 {
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float)){
 		__m128 *p0 = (__m128*)pData;
 		__m128 _val;
@@ -1494,7 +1494,7 @@ void Image<T>::Add(const Image<T1>& image1,const Image<T2>& image2)
 	const T1*& pData1=image1.data();
 	const T2*& pData2=image2.data();
 
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float) && typeid(T1) == typeid(float) && typeid(T2) == typeid(float)){
 		__m128 *p0 = (__m128*)pData, *p1 = (__m128*)pData1, *p2 = (__m128*)pData2;
 		for (int i = 0; i < nElements / 4; i++){
@@ -1525,7 +1525,7 @@ void Image<T>::Add(const Image<T1>& image1,const Image<T2>& image2,float ratio)
 	const T1*& pData1=image1.data();
 	const T2*& pData2=image2.data();
 
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float) && typeid(T1) == typeid(float) && typeid(T2) == typeid(float)){
 		__m128 *p0 = (__m128*)pData, *p1 = (__m128*)pData1, *p2 = (__m128*)pData2;
 		__m128 _rat, _tmp;
@@ -1555,7 +1555,7 @@ void Image<T>::Add(const Image<T1>& image1,const float ratio)
 	}
 	const T1*& pData1=image1.data();
 
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float) && typeid(T1) == typeid(float)){
 		__m128 *p0 = (__m128*)pData, *p1 = (__m128*)pData1;
 		__m128 _rat, _tmp;
@@ -1585,7 +1585,7 @@ void Image<T>::Add(const Image<T1>& image1)
 	}
 	const T1*& pData1=image1.data();
 
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float) && typeid(T1) == typeid(float)){
 		__m128 *p0 = (__m128*)pData, *p1 = (__m128*)pData1;
 		for (int i = 0; i < nElements / 4; i++){
@@ -1604,7 +1604,7 @@ void Image<T>::Add(const Image<T1>& image1)
 template <class T>
 void Image<T>::Add(const T value)
 {
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float)){
 		__m128 *p0 = (__m128*)pData;
 		__m128 _val;
@@ -1640,7 +1640,7 @@ void Image<T>::Subtract(const Image<T1> &image1, const Image<T2> &image2)
 	const T1*& pData1=image1.data();
 	const T2*& pData2=image2.data();
 
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float) && typeid(T1) == typeid(float) && typeid(T2) == typeid(float)){
 		__m128 *p0 = (__m128*)pData, *p1 = (__m128*)pData1, *p2 = (__m128*)pData2;
 		for (int i = 0; i < nElements / 4; i++){
@@ -1659,7 +1659,7 @@ void Image<T>::Subtract(const Image<T1> &image1, const Image<T2> &image2)
 template <class T>
 void Image<T>::Subtract(const T value)
 {
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	if (typeid(T) == typeid(float)){
 		__m128 *p0 = (__m128*)pData;
 		__m128 _val;

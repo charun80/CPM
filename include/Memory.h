@@ -6,36 +6,12 @@
 #include <malloc.h>
 
 
-
-
-
+/*
 namespace cpm
 {
 
 
-template <class T>
-inline void* xmalloc(T size){
-#ifdef WITH_SSE
-#ifdef WIN32
-	return _aligned_malloc(size, 32);
-#else
-	return memalign(32, size);
-#endif
-#else
-	return malloc(size);
-#endif
-}
-
-template <class T>
-inline void xfree(T* ptr){
-#if defined(WITH_SSE) && defined(WIN32)
-	_aligned_free(ptr);
-#else
-	free(ptr);
-#endif
-}
-
-#ifdef WITH_SSE
+#ifdef USE_SIMD
 
 // for windows and linux
 typedef union _m128{
@@ -48,5 +24,7 @@ typedef union _m128{
 #endif
 
 }  // namespace cpm
+
+*/
 
 #endif

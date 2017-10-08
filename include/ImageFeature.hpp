@@ -114,7 +114,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 	if(!imsift.matchDimension(sift_width,sift_height,siftdim))
 		imsift.allocate(sift_width,sift_height,siftdim);
 
-#ifdef WITH_SSE
+#if 0 // #ifdef USE_SIMD
 	hu_m128 _v1, _v5;
 	float v1 = 0.01, v5 = 255.;
 	_v1.m = _mm_set_ps1(v1);
@@ -143,7 +143,7 @@ void ImageFeature::imSIFT(const Image<T>& imsrc, UCImage &imsift, int cellSize, 
 				}
 			}
 			// normalize the SIFT descriptor
-#ifdef WITH_SSE
+#if 0   //#ifdef USE_SIMD
 			int offset = (i*sift_width + j)*siftdim;
 			//std::memcpy(imsift.pData+offset,sift_cell.pData,sizeof(float)*siftdim);
 			unsigned char* dst = imsift.pData + offset;
