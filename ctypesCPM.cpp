@@ -55,3 +55,16 @@ DLL_PUBLIC sFlowResult computeCPMFlow(
     return l_Result;
 }
 
+
+extern "C"
+DLL_PUBLIC void clearFlowResult( sFlowResult* const f_flowRes )
+{
+    if (NULL != f_flowRes->m_outMatching_pf)
+    {
+        free( f_flowRes->m_outMatching_pf );
+        
+        f_flowRes->m_outMatching_pf = NULL;
+        f_flowRes->m_nMatches_i = 0;
+    }
+}
+

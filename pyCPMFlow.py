@@ -15,7 +15,8 @@ __all__ = ["writeMatches", "computeCPMFlow", "readMatches" ]
 __CPMLibName = 'libctypesCPM.so'
 __CPMLibPath = os.path.dirname( os.path.abspath(__file__) )
 
-__cCPMCall = None
+_cCPMCall = None
+_cCPMFreeCall = None
 
 
 import numpy as np
@@ -29,11 +30,25 @@ class __CPMResult(ct.Structure):
               ("m_nMatches_i",ct.c_int) ]
     
     
+    def __del__(self):
+        _cCPMFreeCall( ct.byref(self) )
+        for base in self.__class__.__bases__:
+            # Avoid problems with diamond inheritance.
+            basekey = 'del_' + str(base)
+            if not hasattr(self, basekey):
+                setattr(self, basekey, 1)
+            else:
+                continue
+            # Call this base class' destructor if it has one.
+            if hasattr(base, "__del__"):
+                base.__del__(self)
+    
+    
     def getArray( self ):
         if 0 < self.m_nMatches_i:
             # workaround for bug in numpy.ctypeslib.as_array
             l_arrayPointer = ct.cast( self.m_outMatching_pf, ct.POINTER( ct.c_float ) )
-            return np.ctypeslib.as_array( l_arrayPointer, shape=( self.m_nMatches_i,4) )
+            return np.ctypeslib.as_array( l_arrayPointer, shape=( self.m_nMatches_i,4) ).copy()
         else:
             return np.zeros( (0,4), dtype=np.float32 )
 
@@ -43,21 +58,29 @@ class __CPMResult(ct.Structure):
 def __loadCPMLibrary():
     cpmlib = np.ctypeslib.load_library( __CPMLibName, __CPMLibPath )
     
-    # Return type
+    # Caller Return type
     cpmlib.computeCPMFlow.restype = __CPMResult
     
-    # parameters
+    # Caller parameters
     cpmlib.computeCPMFlow.argtypes = [ \
         np.ctypeslib.ndpointer( dtype=np.float32, flags=('C_CONTIGUOUS','ALIGNED')), \
         np.ctypeslib.ndpointer( dtype=np.float32, flags=('C_CONTIGUOUS','ALIGNED')), \
         ct.c_int, ct.c_int, ct.c_int, \
         ct.c_int  ]
     
-    return cpmlib.computeCPMFlow
+    # Caller freeer
+    cpmlib.clearFlowResult.argtypes = [ ct.POINTER( __CPMResult ) ]
+    
+    global _cCPMCall
+    global _cCPMFreeCall
+    
+    _cCPMCall = cpmlib.computeCPMFlow
+    _cCPMFreeCall = cpmlib.clearFlowResult
+    
 
 ####################################################################################
 
-__cCPMCall = __loadCPMLibrary()
+__loadCPMLibrary()
 
 ####################################################################################
 
@@ -86,7 +109,7 @@ def computeCPMFlow( img1, img2, n_steps=3 ):
     n_steps = max(1, int(n_steps))
     
     # Process images
-    cflow_res = __cCPMCall( img1, img2, img1.shape[0], img1.shape[1], nChannels, n_steps )
+    cflow_res = _cCPMCall( img1, img2, img1.shape[0], img1.shape[1], nChannels, n_steps )
     
     # parse output
     return cflow_res.getArray()
