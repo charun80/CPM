@@ -86,30 +86,37 @@ __loadCPMLibrary()
 
 
 def computeCPMFlow( img1, img2, n_steps=3 ):
-    img1 = np.ascontiguousarray( img1, dtype=np.float32 )
-    img2 = np.ascontiguousarray( img2, dtype=np.float32 )
+    img1Array = np.ascontiguousarray( img1, dtype=np.float32 )
+    img2Array = np.ascontiguousarray( img2, dtype=np.float32 )
     
-    assert( np.all( img1.shape == img2.shape ) )
+    assert( np.all( img1Array.shape == img2Array.shape ) )
     
-    if 2 != img1.ndim:
-        if (3 != img1.ndim) or (3 != img1.shape[2]):
-            raise ValueError("Wrong image shapes: %s" % str(img1.shape) )
-        nChannels = img1.shape[2]
+    if 2 != img1Array.ndim:
+        if (3 != img1Array.ndim) or (3 != img1Array.shape[2]):
+            raise ValueError("Wrong image shapes: %s" % str(img1Array.shape) )
+        nChannels = img1Array.shape[2]
     else:
         nChannels = 1
     
-    mval = max( img1.max(), img2.max() )
+    mval = max( img1Array.max(), img2Array.max() )
     if 1 < mval:
         # normalization
-        #nval = 1. / float(mval)
-        nval = 1. / 255.
-        img1 *= nval
-        img2 *= nval
+        nval = 1. / float(mval)
+        
+        if img1Array is img1:
+            img1Array = img1Array * nval
+        else:
+            img1Array *= nval
+        
+        if img2Array is img2:
+            img2Array = img2Array * nval
+        else:
+            img2Array *= nval
     
     n_steps = max(1, int(n_steps))
     
     # Process images
-    cflow_res = _cCPMCall( img1, img2, img1.shape[0], img1.shape[1], nChannels, n_steps )
+    cflow_res = _cCPMCall( img1Array, img2Array, img1Array.shape[0], img1Array.shape[1], nChannels, n_steps )
     
     # parse output
     return cflow_res.getArray()
